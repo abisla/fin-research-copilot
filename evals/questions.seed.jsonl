@@ -1,0 +1,12 @@
+{"id": "sem-01", "category": "semantic", "query": "What did NVIDIA management say about China export restrictions?", "route": "FILING_RAG", "notes": "expect Risk Factors / MD&A chunks; fill expected_chunk_ids after ingestion"}
+{"id": "sem-02", "category": "semantic", "query": "How does Microsoft describe competitive pressure in cloud?", "route": "FILING_RAG"}
+{"id": "kw-01", "category": "exact_keyword", "query": "What is Blackwell?", "route": "FILING_RAG", "notes": "BM25 should win: product-name exact match"}
+{"id": "kw-02", "category": "exact_keyword", "query": "What does JPM say about CET1 ratio requirements?", "route": "FILING_RAG", "notes": "acronym — sparse retrieval test"}
+{"id": "temp-01", "category": "temporal", "query": "Give me all important NVDA news from the last 7 days", "route": "NEWS", "notes": "hard date filter must apply BEFORE similarity"}
+{"id": "temp-02", "category": "temporal", "query": "What changed in NVIDIA's guidance this quarter versus last quarter?", "route": "CROSS_SOURCE"}
+{"id": "num-01", "category": "numeric", "query": "What was NVDA revenue for the last four quarters?", "route": "NUMERIC", "notes": "must hit SQL, not vectors"}
+{"id": "num-02", "category": "numeric", "query": "How did Microsoft's operating margin trend over the last year?", "route": "NUMERIC"}
+{"id": "x-01", "category": "cross_document", "query": "Revenue increased last quarter — what did management say caused it?", "route": "MIXED", "notes": "SQL for the number + RAG for the why; answer must cite both"}
+{"id": "x-02", "category": "cross_document", "query": "Did recent news contradict anything management said during the last earnings period?", "route": "CROSS_SOURCE"}
+{"id": "ie-01", "category": "insufficient_evidence", "query": "What is NVIDIA's market share in Brazil?", "route": "FILING_RAG", "notes": "correct answer is INSUFFICIENT EVIDENCE"}
+{"id": "ie-02", "category": "insufficient_evidence", "query": "What did the CFO say about the 2030 dividend policy?", "route": "FILING_RAG", "notes": "must not fabricate"}

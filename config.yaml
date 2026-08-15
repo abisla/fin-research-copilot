@@ -9,7 +9,7 @@ tickers:
   # META: {cik: "0001326801", company: "Meta Platforms Inc."}
 
 edgar:
-  user_agent: "Amar FinRAG research CHANGE_ME@email.com"   # SEC requires real contact
+  user_agent: "bisla.amaritpal@email.com"   # SEC requires real contact
   max_rps: 8
   forms: ["10-K", "10-Q", "8-K"]
   n_10q: 4

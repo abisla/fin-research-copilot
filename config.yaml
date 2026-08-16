@@ -13,6 +13,7 @@ edgar:
   max_rps: 8
   forms: ["10-K", "10-Q", "8-K"]
   n_10q: 4
+  n_8k: 8            # cap on recent earnings-related 8-Ks (Item 2.02) per ticker
 
 storage:
   mode: "docker"

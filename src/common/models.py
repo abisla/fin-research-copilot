@@ -17,6 +17,19 @@ class ChunkMeta:
 
 
 @dataclass
+class Chunk:
+    """A chunk as produced by the chunker and persisted to the `chunks` table.
+
+    `meta.chunk_id` is the join key across all three stores: SQL row PK, Qdrant
+    payload field, and BM25 corpus key.
+    """
+    meta: ChunkMeta
+    text: str
+    chunk_index: int        # position within its document, 0-based, ordered by section then offset
+    n_tokens: int
+
+
+@dataclass
 class RetrievedChunk:
     meta: ChunkMeta
     text: str

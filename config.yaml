@@ -26,10 +26,13 @@ postgres:
 qdrant:
   url: "http://localhost:6333"
   collection: "filings"
+  hnsw_m: 16
+  hnsw_ef_construct: 100
 
 embedding:
   model: "BAAI/bge-small-en-v1.5"
   dim: 384
+  batch_size: 64
   query_prefix: "Represent this sentence for searching relevant passages: "  # bge convention
 
 chunking:
@@ -37,6 +40,7 @@ chunking:
   overlap_tokens: 100
 
 retrieval:
+  bm25_path: "data/bm25.pkl"
   dense_top_k: 30
   sparse_top_k: 30
   rrf_k: 60

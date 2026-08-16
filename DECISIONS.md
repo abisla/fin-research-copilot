@@ -40,3 +40,10 @@ Claude Code: append an entry after every phase. Seed entries below.
 - Problem: 20 syndicated copies of one story = fake importance signal and redundant LLM context.
 - Choice: URL exact-dedup, headline-embedding near-dedup (>0.90), agglomerative clustering (~0.75) → events; rank events by article count × source diversity.
 - Interview q: "Why cluster before summarizing?" → token budget goes to distinct events; count-based importance only works after dedup.
+
+## 8. Storage abstraction: local (SQLite + embedded Qdrant) vs docker (Postgres + Qdrant server)
+- Problem: Docker Desktop on Windows drags in WSL2 + virtualization + reboots. Blocking a weekend build on container infra is a bad trade.
+- Choice: one seam (`src/common/db.py::get_conn/get_qdrant`), mode flag in config.yaml. SQLite and embedded Qdrant for dev; Postgres and Qdrant server for deployment. Nothing in the v1 schema needs Postgres-specific features.
+- Alternative: force Docker everywhere; or hardcode SQLite and lose the prod story.
+- Tradeoff: two DDL files to keep in sync, and SQLite gives up concurrent writers + native TIMESTAMPTZ. Acceptable because ingestion is single-process and dates are stored ISO8601.
+- Interview q: "How would you deploy this?" → docker-compose.yml is in the repo; flip storage.mode to "docker" and nothing downstream changes, because no module imports a driver directly. That seam is the actual design decision — the specific databases are swappable details.

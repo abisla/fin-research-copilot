@@ -12,8 +12,8 @@ You are building a production-style financial RAG system over a weekend. The own
 
 ## Stack (fixed — do not substitute)
 - Python 3.11+, uv or pip
-- PostgreSQL (docker-compose provided) — structured financials + news metadata + eval results
-- Qdrant (docker-compose provided) — vectors, HNSW ANN
+- Storage: SQLite (local mode, default) or PostgreSQL (docker mode) — via src/common/db.py
+- Vectors: embedded Qdrant (local mode, default) or Qdrant server (docker mode) — HNSW ANN either way
 - sentence-transformers: `BAAI/bge-small-en-v1.5` embeddings (384d, fast on Apple Silicon)
 - rank_bm25 for sparse retrieval
 - cross-encoder reranker: `cross-encoder/ms-marco-MiniLM-L-6-v2`
@@ -27,7 +27,10 @@ NVDA, MSFT, JPM. (AMZN/META only if time remains — 3 tickers proves everything
 ## Phase plan — execute in order, commit after each phase
 
 ### Phase 0 — Environment (30 min)
-- `docker compose up -d` (postgres + qdrant)
+- STORAGE: config.yaml `storage.mode` is "local" by default = SQLite + embedded Qdrant, NO DOCKER NEEDED.
+  All DB/vector access goes through src/common/db.py (get_conn / get_qdrant). Never import
+  psycopg or QdrantClient directly anywhere else — that seam is what makes both modes work.
+  docker-compose.yml stays in the repo as the documented production deployment path.
 - Install deps from pyproject.toml
 - Run `scripts/init_db.py` to create schema (already stubbed — implement DDL per src/structured/schema.sql)
 - Smoke test: `scripts/smoke_test.py` connects to both stores, embeds one sentence, upserts, searches.

@@ -1,14 +1,18 @@
-"""Create Postgres schema. Run after docker compose up."""
-from pathlib import Path
-import psycopg
-from src.common.config import CFG
+"""Create the schema. Works in either storage mode (see config.yaml -> storage.mode)."""
+from src.common.db import get_conn, schema_path, storage_mode
+
 
 def main():
-    ddl = (Path(__file__).parents[1] / "src/structured/schema.sql").read_text()
-    with psycopg.connect(CFG["postgres"]["dsn"]) as conn:
+    ddl = schema_path().read_text()
+    conn = get_conn()
+    if storage_mode() == "local":
+        conn.executescript(ddl)
+    else:
         conn.execute(ddl)
-        conn.commit()
-    print("schema created")
+    conn.commit()
+    conn.close()
+    print(f"schema created (mode={storage_mode()})")
+
 
 if __name__ == "__main__":
     main()

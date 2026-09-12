@@ -83,7 +83,8 @@ Hard filters first: ticker and date are a SQL `WHERE`, never a similarity search
 RSS (Google News + Yahoo + company IR)
   -> alias relevance filter        (Yahoo's ticker feed leaks generic finance content)
   -> exact-URL dedup
-  -> headline-embedding dedup      (cosine >= 0.90, earliest copy wins)
+  -> headline-embedding dedup      (cosine >= 0.90, earliest copy wins;
+                                    a resolvable URL beats an earlier Google redirect)
   -> agglomerative clustering      (cosine >= 0.75, average linkage) -> event_id
   -> rank by source diversity      (volume capped so it can only break ties)
   -> LLM summary w/ bull/bear      (extractive fallback when no backend is reachable)
@@ -97,7 +98,7 @@ Two findings shaped this and are worth reading before trusting the output:
 
 ## Data sources and limitations
 - **Filings**: SEC EDGAR (`data.sec.gov` submissions API + `www.sec.gov/Archives`), free, no key required. Fair-access rate limiting and a contact-email User-Agent are enforced per config.
-- **News**: Google News RSS gives the broadest coverage but its links are opaque redirects to a JS interstitial, so the real article URL is unrecoverable and those items are **headline-only** (25 of 206 articles have body text). Yahoo Finance RSS gives direct URLs that trafilatura can usually extract. Company IR feeds are used where one exists and is current — NVDA's works, MSFT's is over a year stale, JPM has none. See [DECISIONS.md](DECISIONS.md) #21.
+- **News**: feeds are ordered direct-first, with Google News as the coverage fallback. Company IR feeds (all three tickers) are authoritative and extract 16/17 of the time; Yahoo Finance RSS gives direct URLs trafilatura usually handles; Google News RSS has the broadest reach but its links are opaque redirects to a JS interstitial, so the real article URL is unrecoverable and those items are **headline-only** — it supplies 176 of 216 items and 0 of the bodies. Net: **37 of 209 non-duplicate articles carry body text (17.7%)**, up from 13.1% before the IR feeds were fixed. Validate feeds on the date of their newest item, not on HTTP 200 — MSFT's old feed returned a healthy, 16-month-stale feed. See [DECISIONS.md](DECISIONS.md) #21.
 - **Guidance**: extracted from 8-K EX-99.1 outlook blocks by regex, not LLM. NVDA publishes numeric guidance; MSFT's outlook section defers to the earnings call and JPM issues none, so those are legitimately empty — see [evals/failure_cases.md](evals/failure_cases.md) FC-3.
 - **Earnings call transcripts**: not sourced. Paid providers are out of scope, and free scrapes of licensed transcript sites (e.g. Motley Fool) aren't permitted. The substitute is the **8-K EX-99.1 earnings press release**, which SEC filers publish freely alongside the numbers — see [DECISIONS.md](DECISIONS.md) #10 for how that exhibit is located (EDGAR's own document-type metadata, not filename guessing).
 

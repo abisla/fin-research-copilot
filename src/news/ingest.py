@@ -14,8 +14,9 @@ failure mode that shapes the pipeline (all verified live — DECISIONS #21):
   usually extract, but the feed leaks generic syndicated finance content: a third of
   the NVDA feed was unrelated ("Worried About RMDs in Retirement?"). Hence the alias
   relevance filter.
-* **Company IR feeds** — authoritative and fully extractable, but only where a company
-  publishes one. JPM has no working public RSS, so it runs on the two above.
+* **Company IR feeds** — authoritative, direct URLs, body extractable every time. One
+  per ticker, each chosen on *freshness* rather than HTTP 200: the obvious MSFT and JPM
+  URLs both return a well-formed feed that is stale or 404s. These lead the fetch order.
 
 Because Google redirect URLs are unique per item even for the same story, URL dedup
 alone cannot collapse syndication. That is the whole reason for the second,
@@ -104,16 +105,21 @@ def fetch_feed(url: str, limit: int | None = None) -> list:
 
 
 def feed_urls(ticker: str, days: int) -> dict[str, str]:
-    """Every feed URL for one ticker, keyed by feed name."""
+    """Every feed URL for one ticker, keyed by feed name.
+
+    Ordered deliberately: the feeds with resolvable publisher URLs come first and
+    Google News backfills last. Nothing downstream depends on dict order for
+    correctness — URL dedup is order-independent — but the order states the intent,
+    which is that Google is the coverage fallback, not the primary source.
+    """
     news = CFG["news"]
     query = news["queries"].get(ticker, ticker).replace(" ", "+")
-    urls = {
-        "google_news": news["feeds"]["google_news"].format(query=query, days=days),
-        "yahoo": news["feeds"]["yahoo"].format(ticker=ticker),
-    }
+    urls = {}
     ir = news.get("ir_feeds", {}).get(ticker)
     if ir:
         urls["ir"] = ir
+    urls["yahoo"] = news["feeds"]["yahoo"].format(ticker=ticker)
+    urls["google_news"] = news["feeds"]["google_news"].format(query=query, days=days)
     return urls
 
 
@@ -207,15 +213,22 @@ def _headline_vectors(items: list[NewsItem]):
 
 
 def mark_near_duplicates(items: list[NewsItem], threshold: float | None = None) -> int:
-    """Flag syndicated re-posts of a story already seen. Earliest copy wins.
+    """Flag syndicated re-posts of a story already seen.
+
+    Survivorship is earliest-first, with one override: a copy carrying a resolvable
+    publisher URL beats an earlier Google redirect. Without the override the wire copy
+    that happened to hit Google first wins, `hydrate_text` skips the resulting
+    duplicate, and the story loses a body it could have had — Google being first is an
+    artifact of feed latency, not of who broke the story. This is the mechanical
+    meaning of "Google is the fallback".
 
     Exact-URL dedup cannot do this job: Google News assigns a *unique* redirect URL to
     every item, so twenty outlets running the same wire story arrive as twenty distinct
     URLs with near-identical headlines. Left alone they inflate that story's article
     count and hand it the top slot in the brief purely on volume.
 
-    Items are processed oldest-first and compared against the kept set, so the survivor
-    is the earliest publication — the one that broke the story. Duplicates are kept in
+    Items are processed oldest-first and compared against the kept set, so within one
+    URL class the survivor is the earliest publication. Duplicates are kept in
     the table (flagged) rather than dropped, because the duplicate *count* is itself a
     signal, and because dropping them would make the dedup unauditable.
     """
@@ -232,13 +245,34 @@ def mark_near_duplicates(items: list[NewsItem], threshold: float | None = None) 
             sim = float(vecs[i] @ vecs[j])
             if sim > best_sim:
                 best_j, best_sim = j, sim
-        if best_j is not None and best_sim >= threshold:
+        if best_j is None or best_sim < threshold:
+            kept.append(i)
+            continue
+        if is_google_redirect(items[best_j].url) and not is_google_redirect(items[i].url):
+            _promote(items, winner=i, loser=best_j, kept=kept)
+        else:
             items[i].is_duplicate = True
             items[i].duplicate_of = items[best_j].article_id
-            n_dupes += 1
-        else:
-            kept.append(i)
+        n_dupes += 1
     return n_dupes
+
+
+def _promote(items: list[NewsItem], winner: int, loser: int, kept: list[int]) -> None:
+    """Hand survivorship to `winner` and re-point everything that referenced `loser`.
+
+    Called only when the incumbent survivor is a Google redirect and the challenger
+    is not. Any duplicate already pointing at the loser must be re-pointed in the same
+    move, or the table ends up with `duplicate_of` chains into a row that is itself
+    flagged as a duplicate.
+    """
+    w, l = items[winner], items[loser]
+    for item in items:
+        if item.duplicate_of == l.article_id:
+            item.duplicate_of = w.article_id
+    l.is_duplicate, l.duplicate_of = True, w.article_id
+    w.is_duplicate, w.duplicate_of = False, None
+    kept.remove(loser)
+    kept.append(winner)
 
 
 def cluster_events(items: list[NewsItem], threshold: float | None = None) -> int:

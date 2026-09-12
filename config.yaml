@@ -68,11 +68,16 @@ news:
     google_news: "https://news.google.com/rss/search?q={query}+when:{days}d&hl=en-US&gl=US&ceid=US:en"
     yahoo: "https://feeds.finance.yahoo.com/rss/2.0/headline?s={ticker}&region=US&lang=en-US"
 
-  # Company IR feeds, where one is published. JPM has no working public RSS
-  # (jpmorganchase.com/news-stories/rss -> 301), so it relies on the two above.
+  # First-party newsrooms: authoritative, direct URLs, body always extractable.
+  # Each was picked on *freshness*, not just HTTP 200 — two of the obvious URLs
+  # return a valid feed that is over a year stale. See DECISIONS #21.
+  #   MSFT: news.microsoft.com/feed/ parses fine but its newest item is 2025-05-07,
+  #         so it contributes nothing in a 7-day window; /source/feed/ is the live one.
+  #   JPM:  jpmorganchase.com/news-stories/rss -> 404; the IR host carries the real feed.
   ir_feeds:
     NVDA: "https://nvidianews.nvidia.com/releases.xml"
-    MSFT: "https://news.microsoft.com/feed/"
+    MSFT: "https://news.microsoft.com/source/feed/"
+    JPM:  "https://jpmorganchaseco.gcs-web.com/rss/news-releases.xml"
 
   queries:
     NVDA: "NVIDIA NVDA stock"

@@ -25,7 +25,9 @@ src/news/__init__.py
 src/parsing/__init__.py
 src/parsing/sec_parser.py
 src/retrieval/__init__.py
+src/retrieval/dense.py
 src/retrieval/hybrid.py
+src/retrieval/rerank.py
 src/retrieval/sparse.py
 src/router/__init__.py
 src/router/router.py

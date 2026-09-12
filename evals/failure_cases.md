@@ -93,5 +93,33 @@ dense-only arm's Recall@5 on exact-keyword questions as the number that proves i
 
 ---
 
+## FC-3 — MSFT's "Business Outlook" is a pointer, not guidance (registered)
+
+**Observed in** Phase 4 guidance extraction. NVDA's 8-K outlook blocks carry real
+numbers ("Revenue is expected to be $108.0 billion, plus or minus 2%"). MSFT's
+matching block says:
+
+> Business Outlook — Microsoft will provide forward-looking guidance in connection
+> with this quarterly earnings announcement on its earnings conference call and
+> webcast.
+
+The section exists, parses correctly, and contains no guidance. MSFT gives guidance
+verbally on the call; the call transcript is the licensed source this build
+deliberately does not scrape (README, DECISIONS #10). JPM issues no press-release
+guidance at all and has zero rows.
+
+**Why it matters:** "What is Microsoft's guidance for next quarter?" retrieves a
+well-formed, on-topic, correctly-dated row containing no answer — the same shape as
+FC-1's JPM 10-K MD&A stub. A generator with no groundedness check will summarize it
+into a confident non-answer. Two independent sources of this failure in one corpus
+suggests it is the dominant hallucination risk in the build, not an edge case.
+
+**Phase 7 measurement.** This is an *insufficient-evidence* question, not a retrieval
+one: retrieval succeeds and the correct answer is "not disclosed in the filings I
+have". Added to `evals/questions.jsonl` in that category, where the judge scores
+whether the generator declined rather than whether it retrieved.
+
+---
+
 <!-- Remaining required cases (CLAUDE.md Phase 7): dense-wins, stale-doc-outranks-fresh,
      chunk-boundary, syndicated-news-inflation. Add as found during eval. -->

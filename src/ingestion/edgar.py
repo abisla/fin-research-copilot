@@ -180,3 +180,21 @@ def ingest_all() -> int:
     finally:
         conn.close()
     return total
+
+
+# --- public fetch seam -------------------------------------------------------
+# Phase 4 (companyfacts XBRL) talks to the same host under the same fair-access
+# rules, so it reuses this session/limiter rather than opening a second unthrottled
+# path to data.sec.gov. SEC rate-limits per IP, not per script.
+
+def sec_session() -> tuple[requests.Session, RateLimiter]:
+    """A configured session plus its rate limiter, for any data.sec.gov caller."""
+    return _session(), RateLimiter(CFG["edgar"]["max_rps"])
+
+
+def sec_get_json(url: str, session: requests.Session | None = None,
+                 limiter: RateLimiter | None = None) -> dict:
+    """Rate-limited GET returning parsed JSON. Opens its own session if not given."""
+    if session is None or limiter is None:
+        session, limiter = sec_session()
+    return _fetch(session, limiter, url).json()

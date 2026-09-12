@@ -29,7 +29,10 @@ CREATE TABLE IF NOT EXISTS financials (
     metric        TEXT NOT NULL,             -- revenue | eps_diluted | operating_income | gross_margin | segment:<name>
     value         NUMERIC,
     unit          TEXT,                      -- usd | usd_per_share | pct
-    source_doc_id TEXT REFERENCES documents(doc_id),
+    period_end    DATE,                      -- fiscal period end; 52/53-week filers don't end on month boundaries
+    source_accn   TEXT,                      -- XBRL accession the value came from (always set)
+    source_doc_id TEXT REFERENCES documents(doc_id),   -- set only when that filing was also ingested
+    derived       BOOLEAN DEFAULT FALSE,     -- TRUE = computed (Q4 by subtraction, gross_margin as a ratio)
     PRIMARY KEY (ticker, fiscal_year, fiscal_qtr, metric)
 );
 

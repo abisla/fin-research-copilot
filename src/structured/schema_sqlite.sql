@@ -32,7 +32,10 @@ CREATE TABLE IF NOT EXISTS financials (
     metric        TEXT NOT NULL,
     value         REAL,
     unit          TEXT,
+    period_end    TEXT,
+    source_accn   TEXT,
     source_doc_id TEXT REFERENCES documents(doc_id),
+    derived       INTEGER DEFAULT 0,
     PRIMARY KEY (ticker, fiscal_year, fiscal_qtr, metric)
 );
 

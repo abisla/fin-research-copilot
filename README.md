@@ -3,7 +3,7 @@
 Production-style RAG system over SEC filings, structured financials (XBRL → Postgres), and ticker news.
 Hybrid retrieval (dense + BM25 + RRF), cross-encoder reranking, query routing, citation-enforced generation, and measured evals (dense vs hybrid vs hybrid+rerank).
 
-**Status: Phase 5 (news pipeline) complete — RSS ingest, dedup, event clustering, ranked weekly brief. Next: Phase 6 (router + generation).** Build order and full spec: [CLAUDE.md](CLAUDE.md). Decisions log: [DECISIONS.md](DECISIONS.md). Known failures: [evals/failure_cases.md](evals/failure_cases.md).
+**Status: Phase 6 (router + generation) complete — rule-first routing with an LLM fallback, evidence assembly across three stores, cited answers with a citation post-check. Next: Phase 7 (evaluation).** Build order and full spec: [CLAUDE.md](CLAUDE.md). Decisions log: [DECISIONS.md](DECISIONS.md). Known failures: [evals/failure_cases.md](evals/failure_cases.md).
 
 ## Quickstart
 ```bash
@@ -20,6 +20,8 @@ python scripts/smoke_financials.py # gate for Phase 4
 python scripts/ingest_news.py     # Phase 5: RSS -> dedup -> event clusters
 python scripts/smoke_news.py      # gate for Phase 5
 python scripts/smoke_headline_only.py   # gate: no claims beyond the headlines (FC-6)
+python scripts/ask.py "How has NVDA revenue changed over the last four quarters and why"
+python scripts/smoke_answer.py    # gate for Phase 6 (router + generation)
 python scripts/news_brief.py --ticker NVDA   # weekly intelligence brief
 ```
 
@@ -96,6 +98,28 @@ Two findings shaped this and are worth reading before trusting the output:
 **Headlines are dominated by the company name.** Every NVDA headline contains "Nvidia", `(NASDAQ:NVDA)` and a ` - Publisher` suffix, adding a *constant* ~0.13 to every pairwise cosine. At the configured 0.75 threshold that merged 39 unrelated articles into one "event". Stripping those three elements before embedding cut spurious above-threshold pairs from 690 to 51 — [DECISIONS.md](DECISIONS.md) #22. The stored headline stays verbatim; only the vectors are normalized.
 
 **Article count is the wrong importance signal.** The biggest JPM cluster in a live window was 18 automated 13F posts from one publisher. Ranking is `n_sources + 0.25 * min(n_articles, 3)`, so n articles from one source can never outrank n+1 sources — [DECISIONS.md](DECISIONS.md) #23, [failure_cases.md](evals/failure_cases.md) FC-4.
+
+## Routing and the citation contract
+
+A route names **which store answers the question**, not what the question is about — topic is undecidable ("NVDA margins" is a figure, a filing discussion and a news story at once), but the answering store is not. Rules handle the canonical cases at ~0ms and abstain when signals conflict; only then is the LLM classifier consulted. `classify()` is pure, so the routing contract is asserted on a fixed question list with no database: 10/10 by rule in `scripts/smoke_answer.py`.
+
+| Route | Answered from | Example |
+|---|---|---|
+| `NUMERIC` | `financials` | "What was NVDA revenue last quarter" |
+| `FILING_RAG` | filing chunks | "What risk factors does MSFT disclose" |
+| `NEWS` | `news_articles` | "What happened to JPM in the past 3 days" |
+| `MIXED` | financials + filings | "How has revenue changed over four quarters **and why**" |
+| `CROSS_SOURCE` | two tickers, or two sources reconciled | "Compare NVDA and MSFT revenue growth" |
+
+Two findings worth knowing:
+
+**A date phrase is not a news signal.** The first router OR-ed the recency window into the news signal, so "what was NVDA revenue **last quarter**" routed to NEWS and got answered from articles — "last quarter" names a fiscal period. Recency is now weighed separately and a numeric signal beats a bare window — [DECISIONS.md](DECISIONS.md) #26.
+
+**The LLM fallback needed few-shot, and only measurement showed it.** With a bare label list llama3.1:8b answered NEWS to *every* ambiguous query — 2/7 on a hand-built set — because NEWS was the first option offered. One example per route plus naming FILING_RAG as the home for vague company questions took it to 7/7. The fallback only ever sees queries no rule matched, so that margin is its entire value.
+
+**Citations are verified, not trusted.** Every store's evidence is normalized to one `Evidence` type, numbered `[1]..[n]` once, and checked once: valid citations resolve to stable keys (`chunk_id`, `article_id`, a financials coordinate), and any `[n]` beyond the supplied context is **stripped from the prose** and recorded on `Answer.hallucinated_citations`. Stripping matters — a dangling `[7]` still reads as sourced, which is the FC-6 failure where a citation made invention look verified. `Answer.uncited` flags a substantive answer that cited nothing at all.
+
+Known limitation: on "give me all important NVDA news", the answer cites 2 of 8 supplied articles. Attempting to fix that by prompt ("cover each distinct item") made the model emit one article verbatim with no citations — strictly worse, so it was reverted and left for Phase 7 to measure. The clustered weekly brief is the right tool for that question.
 
 ## Data sources and limitations
 - **Filings**: SEC EDGAR (`data.sec.gov` submissions API + `www.sec.gov/Archives`), free, no key required. Fair-access rate limiting and a contact-email User-Agent are enforced per config.

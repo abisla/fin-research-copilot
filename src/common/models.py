@@ -39,10 +39,27 @@ class RetrievedChunk:
 
 @dataclass
 class Answer:
+    """A generated answer plus everything needed to audit it.
+
+    `citations` holds evidence *keys*, not [n] indices — a chunk_id, an article_id or a
+    financials coordinate — because the numbering is per-question and meaningless once
+    the answer is stored, while the keys are what Phase 7 compares to expected_chunk_ids.
+    `hallucinated_citations` is kept rather than silently dropped: a model citing a
+    chunk that was never supplied is a measurable failure, not a formatting slip.
+    """
     text: str
-    citations: list[str] = field(default_factory=list)   # chunk_ids actually cited
+    citations: list[str] = field(default_factory=list)   # evidence keys actually cited
     route: str = ""
     insufficient_evidence: bool = False
+    hallucinated_citations: list[int] = field(default_factory=list)
+    evidence: list = field(default_factory=list)         # list[answer.Evidence]; untyped to avoid a cycle
+    decision: object | None = None                       # router.RouteDecision
+
+    @property
+    def uncited(self) -> bool:
+        """A substantive answer with no citation at all — principle #5 says every claim
+        cites or the answer says insufficient evidence, so this is a contract breach."""
+        return not self.citations and not self.insufficient_evidence
 
 
 @dataclass

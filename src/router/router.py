@@ -45,10 +45,15 @@ NUMERIC_PAT = re.compile(
 NEWS_PAT = re.compile(
     r"\b(news|headlines?|announced?|announcement|press release|what happened|"
     r"happening|going on|developments?|coverage)\b", re.I)
+# "annual report" / "quarterly filing" were missing here, which cost temp-05 in the
+# Phase 7 eval: "Microsoft's *latest* annual report" matched the recency phrase, nothing
+# marked it as a filing question, and it routed to NEWS. Same class as the "last
+# quarter" bug in DECISIONS #26 — a document noun has to outrank a recency adjective.
 FILING_PAT = re.compile(
-    r"\b(10-?[kq]|8-?k|filings?|risk factors?|md&a|management (said|discuss)|"
+    r"\b(10-?[kq]|8-?k|filings?|filed|annual report|quarterly report|"
+    r"quarterly filing|annual filing|risk factors?|md&a|management (said|discuss)|"
     r"earnings call|prepared remarks|commentary|disclosed?|outlook|guidance|"
-    r"strategy|competition|segment)\b", re.I)
+    r"strategy|competition|segments?)\b", re.I)
 # "and why", "explain", "drivers" — the tell that a number alone will not answer it.
 NARRATIVE_PAT = re.compile(
     r"\b(why|explain|reason|driver|drivers|cause|caused|because|how come|"

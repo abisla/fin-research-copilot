@@ -3,7 +3,7 @@
 Production-style RAG system over SEC filings, structured financials (XBRL → Postgres), and ticker news.
 Hybrid retrieval (dense + BM25 + RRF), cross-encoder reranking, query routing, citation-enforced generation, and measured evals (dense vs hybrid vs hybrid+rerank).
 
-**Status: Phase 6 (router + generation) complete — rule-first routing with an LLM fallback, evidence assembly across three stores, cited answers with a citation post-check. Next: Phase 7 (evaluation).** Build order and full spec: [CLAUDE.md](CLAUDE.md). Decisions log: [DECISIONS.md](DECISIONS.md). Known failures: [evals/failure_cases.md](evals/failure_cases.md).
+**Status: Phase 7 (evaluation) complete — 40 labelled questions, four retrieval arms measured, LLM-as-judge answer scoring, 13 documented failure cases. Next: Phase 8 (Streamlit demo + README polish).** Build order and full spec: [CLAUDE.md](CLAUDE.md). Decisions log: [DECISIONS.md](DECISIONS.md). Known failures: [evals/failure_cases.md](evals/failure_cases.md).
 
 ## Quickstart
 ```bash
@@ -120,6 +120,27 @@ Two findings worth knowing:
 **Citations are verified, not trusted.** Every store's evidence is normalized to one `Evidence` type, numbered `[1]..[n]` once, and checked once: valid citations resolve to stable keys (`chunk_id`, `article_id`, a financials coordinate), and any `[n]` beyond the supplied context is **stripped from the prose** and recorded on `Answer.hallucinated_citations`. Stripping matters — a dangling `[7]` still reads as sourced, which is the FC-6 failure where a citation made invention look verified. `Answer.uncited` flags a substantive answer that cited nothing at all.
 
 Known limitation: on "give me all important NVDA news", the answer cites 2 of 8 supplied articles. Attempting to fix that by prompt ("cover each distinct item") made the model emit one article verbatim with no citations — strictly worse, so it was reverted and left for Phase 7 to measure. The clustered weekly brief is the right tool for that question.
+
+## Evaluation
+
+40 questions across six categories (`evals/questions.jsonl`), 25 of them graded on retrieved chunks. Ground truth is built from explicit, re-runnable relevance rules rather than a hand-picked id list — `scripts/build_questions.py` documents the method and its bias. Full tables: [evals/results.md](evals/results.md). Failure cases: [evals/failure_cases.md](evals/failure_cases.md).
+
+| retriever | Recall@5 | Precision@5 | MRR | Hit@5 | Freshness | median ms |
+|---|---|---|---|---|---|---|
+| `dense` | 0.050 | 0.360 | 0.613 | 0.720 | 0.276 | 17 |
+| `bm25` | 0.059 | 0.360 | 0.457 | 0.640 | 0.284 | 6 |
+| `hybrid` | 0.062 | **0.416** | **0.613** | 0.680 | 0.259 | 24 |
+| `rerank` | 0.060 | **0.432** | 0.508 | 0.680 | 0.239 | 133 |
+
+Recall@5 is bounded by `5/|relevant|` (sets run 7-112 chunks) and is reported unnormalized rather than rescaled to look better. Precision@5 and MRR are the fair cross-question comparisons.
+
+**The eval's most useful finding: RRF hybrid scored *below* dense alone** — MRR 0.500 vs 0.613 before the fix — and had a lower hit rate than either component. The cause is arithmetic, not tuning: RRF scores `1/(k+rank)`, so a chunk that is dense rank 1 and absent from the sparse list scores `1/61 = 0.0164`, while a chunk ranked 4th and 6th by the two arms scores `1/64 + 1/66 = 0.0308`. Rank-only fusion structurally prefers "mediocre in both arms" to "the single best match in one". Anchoring each arm's rank-1 hit into the fused top-2 restored it to MRR 0.613 without tuning any weight — [failure_cases.md](evals/failure_cases.md) FC-9.
+
+**Answer quality** (40 questions, LLM-as-judge on a separate prompt): groundedness 4.78/5, relevance 5.00/5, **citations valid 1.00**, refusal behaviour 0.95, answers citing nothing 0.20, answers with an unsupported claim 0.15. Route accuracy is 0.88 rules-only.
+
+Read those with one caveat attached: llama3.1:8b as judge returned near-ceiling scores on almost everything and once scored citation correctness 5/5 on an answer with **zero citations**. That is exactly why citation validity is decided by `check_citations` in code and not asked of the judge — and `citations valid = 1.00` across 40 answers is the post-check working, not the model being careful. The number worth worrying about is that **20% of answers cite nothing at all**; it is measured and left unfixed rather than tuned by feel, because Phase 6 showed that tuning this prompt for coverage made it strictly worse.
+
+**A bad eval does not look like a bad eval, it looks like a bad system.** Two earlier versions of this ground truth produced plausible-looking numbers that were wrong: relevant sets of 43-413 chunks (Recall@5 ceiling ~1%), and — more instructive — scoring *recency* as if it were relevance, which reported Hit@5 0.44 because the identical paragraph retrieved from a 10-Q instead of the 10-K counted as a miss. Splitting content relevance from a separate **freshness** metric took Hit@5 to 0.72 and made the real recency defect visible as itself (FC-10). Both were caught by reading the misses, not the summary table — [DECISIONS.md](DECISIONS.md) #28.
 
 ## Data sources and limitations
 - **Filings**: SEC EDGAR (`data.sec.gov` submissions API + `www.sec.gov/Archives`), free, no key required. Fair-access rate limiting and a contact-email User-Agent are enforced per config.

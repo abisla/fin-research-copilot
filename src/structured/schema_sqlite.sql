@@ -77,6 +77,8 @@ CREATE TABLE IF NOT EXISTS eval_results (
     category     TEXT,
     retriever    TEXT,
     recall_at_5  REAL,
+    precision_at_5 REAL,
+    hit_at_5     INTEGER,
     mrr          REAL,
     groundedness REAL,
     citation_ok  INTEGER,

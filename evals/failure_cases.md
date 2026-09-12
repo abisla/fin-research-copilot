@@ -240,3 +240,191 @@ roughly a list of the headlines — close to what the deterministic extractive f
 already produces. That is the honest output for that input, but it means the LLM earns
 its place on full-text clusters and barely any on headline-only ones. The lever worth
 pulling is body-text coverage (currently 37/209), not more prompt tuning.
+
+---
+
+*The five cases below were found by running Phase 7's retrieval eval
+(`python -m src.evals.retrieval_eval`, 25 retrieval-graded questions, 4 arms).
+Numbers are from run `20260912T155301` and are reproducible from
+`evals/questions.jsonl`.*
+
+## FC-7 — BM25 wins: a rare token the embedding has never really seen (registered)
+
+**Case.** `kw-03`, "What does NVIDIA say about the Hopper architecture?"
+MRR: **dense 0.00, BM25 1.00**, hybrid 0.00, rerank 0.50.
+
+**Why.** "Hopper" is a product codename appearing in 16 chunks corpus-wide, almost all
+single-mention, and none in the current 10-K — Blackwell superseded it. bge-small has
+no useful vector for a proper noun this rare, so dense retrieval falls back to general
+"NVIDIA architecture" semantics and returns the Business section boilerplate. BM25 does
+not need to understand the token; it only needs it to be rare, which is exactly when
+IDF is largest.
+
+**Status: registered, not fixed.** This is the case hybrid retrieval exists for. It is
+recorded because it is the concrete evidence for that design choice, and because it
+shows the failure is a property of the *embedding model's vocabulary*, not of a tuning
+constant — no amount of reranking recovers a chunk the dense arm never retrieved.
+
+## FC-8 — Dense wins: the question and the answer share no vocabulary (registered)
+
+**Case.** `kw-05`, "What does Microsoft report about Azure?"
+MRR: **dense 1.00, BM25 0.00**, and `sem-09` ("risk of a security breach") dense 1.00,
+BM25 0.00.
+
+**Why.** BM25 ranks by term overlap, and "Azure" appears in dozens of revenue tables
+that mention it once in a list. The chunk that actually *reports on* Azure —
+"Revenue in Intelligent Cloud was $30.9 billion and increased 28%" — is out-competed by
+boilerplate with a higher raw term count. sem-09 is the sharper version: the 10-K says
+"cybersecurity threat environment", the question says "security breach", and the lexical
+overlap is nearly zero.
+
+**Status: registered.** The mirror image of FC-7, and the reason neither arm is dropped.
+
+## FC-9 — RRF scored *below* its own best arm (fixed)
+
+**The most useful thing the eval found.** Hybrid was supposed to be at least as good as
+its components. It was not:
+
+| arm | MRR | Hit@5 | Precision@5 |
+|---|---|---|---|
+| dense | 0.613 | 0.720 | 0.360 |
+| bm25 | 0.457 | 0.640 | 0.360 |
+| hybrid (plain RRF) | **0.500** | **0.560** | 0.392 |
+
+Hybrid lost to dense on both MRR and Hit@5, and had a *lower hit rate than either arm*.
+
+**Why — the arithmetic, traced on `kw-05`.** RRF scores a chunk `1/(k+rank)` per arm,
+k=60. The correct chunk was dense rank 1 and absent from BM25's list: `1/61 = 0.0164`.
+An irrelevant chunk ranked 4th by dense and 6th by BM25 scored
+`1/64 + 1/66 = 0.0308` — **nearly double**. Rank-only fusion therefore prefers
+"mediocre in both arms" to "the single best match in one arm", by construction. When
+the two arms are of comparable quality that is the desired consensus behaviour; when one
+arm is clearly right and the other has no idea, it destroys the answer. kw-05 went from
+MRR 1.00 (dense) to 0.00 (hybrid).
+
+**Fix.** `rrf_fuse(..., anchor=True)` keeps each arm's rank-1 result in the fused top-2.
+No weight is tuned on the eval set — the fix restores the one piece of information
+rank-only fusion discards, namely that a chunk was some retriever's top choice.
+
+| arm | MRR | Hit@5 | Precision@5 |
+|---|---|---|---|
+| hybrid (anchored) | **0.613** | **0.680** | **0.416** |
+
+Hybrid now matches the best single arm on MRR and beats both on precision. The cost is
+that the fused list is no longer globally score-descending, which broke an assertion in
+`scripts/smoke_retrieval.py` — the scores were left truthful and the *invariant* was
+changed rather than inflating scores to preserve it.
+
+**Still open:** rerank has the best Precision@5 (0.432) but MRR 0.508, below dense's
+0.613 — the cross-encoder improves the *set* while sometimes demoting the single best
+chunk. Whether that trade is worth 100ms per query is a Phase 8 A/B, not a guess.
+
+## FC-10 — Nothing prefers the current filing (open)
+
+**Case.** Freshness — the share of retrieved relevant chunks that come from the
+company's *current* filing — is **0.24-0.28 across all four arms**. `temp-04`
+("Blackwell demand in its most recent quarterly filing") retrieves the right content
+from FY2025Q1 and FY2024Q4 8-Ks.
+
+**Why.** This corpus repeats disclosures near-verbatim across a 10-K and three or four
+10-Qs. Retrieval ranks on similarity alone, and identical text scores identically, so
+which copy surfaces is arbitrary — filing date is carried in the payload as metadata and
+used only as a hard filter, never as a ranking signal.
+
+**Why it matters more than it looks.** Every arm answers "what does the company say
+about X" from whichever copy the index happened to favour. For a risk factor repeated
+unchanged that is harmless; for anything restated between filings it silently answers
+from stale disclosure, and the citation makes it look verified.
+
+**Status: measured and open.** The fix is a recency prior in ranking (a small date-decay
+term, or preferring the newest document among near-duplicate texts). Not applied here
+because tuning a decay constant against 25 questions would fit the question set rather
+than the problem. The metric is in place, so the fix is now measurable.
+
+## FC-11 — The number and its label are in different chunks (open)
+
+**Case.** `temp-06`, "What did JPMorgan report for net revenue in its most recent
+quarterly filing?" — MRR **0.00 on every arm**.
+
+**Why.** The chunk holding the figure is
+`...054343::md-a::0040`: *"2026 2025 Change 2026 2025 Change Total net revenue
+$ 20,272 $ 18,847 8 % Total noninterest expense 11,108 9,858 13 ..."* — a bare grid of
+numbers. The table's header row, which says which segment and which period the columns
+belong to, was split into a **different chunk** by the paragraph-splitting chunker.
+
+So the chunk is close to unretrievable (a dense vector over mostly digits carries almost
+no topical signal; BM25 sees two content words) and, worse, it is close to *uncitable*:
+a generator handed it cannot tell which period `$20,272` belongs to. **149 of 3,456
+chunks (4.3%) are more than 55% numeric tokens**, concentrated in JPM's MD&A (92 chunks,
+7.7% of that section) — JPM is worst because bank filings are mostly tables.
+
+Note the retriever did return `...054343::md-a::0012` — *"For the second quarter of
+2026, JPMorganChase reported net income of $21.2 billion, up 41%"* — which is the better
+answer for a human. It scored zero because the relevance rule demanded "net revenue".
+That is a ground-truth limitation, recorded rather than quietly corrected.
+
+**Status: open.** The real fix is table-aware chunking: keep a table's header with its
+body, or serialize tables to labelled rows before chunking. That is a Phase 2 change
+with re-ingestion behind it, so it is scoped as v2 — and it is the strongest argument in
+this document for why **numbers live in Postgres and not in the vector store**
+(CLAUDE.md principle #2). The structured path answers this question correctly today;
+the RAG path cannot.
+
+## FC-12 — A refusal that smuggles claims back in (open)
+
+**Case.** `ie-02`, "What did the CFO say about the 2030 dividend policy?" — no such
+policy is disclosed, so the correct answer is a refusal. What came back:
+
+> The CFO of Microsoft did not explicitly mention the 2030 dividend policy in the
+> provided context. **However, based on the statements from the CFO in the 10-K and 10-Q
+> filings, it can be inferred that the company intends to continue returning capital to
+> shareholders in the form of dividends** [...]
+>
+> Facts
+> - The Board of Directors declared dividends totaling $27.0 billion [...]
+
+It declines in the first sentence and then answers anyway, with a Facts section and four
+citations. The judge scored it groundedness 4/5 and listed **no** unsupported claims,
+because every individual sentence *is* supported — the dividend figures are real. The
+defect is not a false statement; it is that a question with no answer received one.
+
+**Why the existing guards miss it.** `check_citations` passes (all four citations
+resolve). `Answer.uncited` passes (it cites plenty). The refusal test passes (the answer
+does contain a refusal phrase). Every mechanical guard sees a well-formed, well-cited
+answer. This is the FC-6 pattern one level up: there, invented content wore a citation;
+here, *relevant-but-off-question* content wears one.
+
+**Status: open.** The honest fix is a contract change — when the answer declines, it
+must stop, rather than declining and continuing. That is a prompt change whose Phase 6
+lesson was that tuning this prompt for coverage made things strictly worse, so it needs
+to be made against this eval rather than by feel. The measurement now exists.
+
+## FC-13 — The LLM routing fallback is net-negative on the eval set (open)
+
+**Case.** Route accuracy over all 40 questions:
+
+| routing | accuracy | fallback used | fallback wrong |
+|---|---|---|---|
+| rules only, abstain -> FILING_RAG | **0.88** | 18 | 1 |
+| rules + LLM fallback | 0.82 | 18 | 3 |
+
+The LLM classifier is consulted on the 18 questions no rule matched, and it does worse
+than simply defaulting to FILING_RAG. It sent "What is Blackwell?" to MIXED, "demand for
+its newest generation of chips" to NEWS, and "NVIDIA's market share in Brazil" to NUMERIC.
+
+**Tension with DECISIONS #26, stated rather than smoothed over.** Phase 6 measured the
+few-shot fallback at 7/7 on a hand-built set of vague queries, up from 2/7 — that result
+was real, and it is not what this table contradicts. What this shows is that on the
+*eval distribution*, the abstention default happens to be right more often than the
+model's guess. The difference is **two questions**, which is noise at n=40. So the
+fallback is not being removed on this evidence.
+
+**What would settle it:** more questions in the ambiguous band, and a per-route breakdown
+of where the fallback helps versus hurts. Recorded as an open question with a number
+against it, rather than as a conclusion.
+
+**One genuine rule bug this did surface, now fixed:** `temp-05`, "Microsoft's *latest*
+annual report", routed to NEWS — "latest" matched the recency table and "annual report"
+was missing from `FILING_PAT`, so nothing marked it as a filing question. Same class as
+the "last quarter" bug in DECISIONS #26: a document noun has to outrank a recency
+adjective. Adding the document nouns fixed it and lifted rules-only accuracy to 0.88.

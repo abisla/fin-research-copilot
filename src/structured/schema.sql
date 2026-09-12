@@ -74,6 +74,8 @@ CREATE TABLE IF NOT EXISTS eval_results (
     category    TEXT,
     retriever   TEXT,                        -- dense | hybrid | hybrid_rerank
     recall_at_5 NUMERIC,
+    precision_at_5 NUMERIC,
+    hit_at_5   BOOLEAN,
     mrr         NUMERIC,
     groundedness NUMERIC,
     citation_ok BOOLEAN,

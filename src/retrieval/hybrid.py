@@ -23,8 +23,19 @@ MODES = ("dense", "bm25", "hybrid", "rerank")
 
 
 def rrf_fuse(dense: list[RetrievedChunk], sparse: list[RetrievedChunk], k: int = 60,
-             top_n: int = 30) -> list[RetrievedChunk]:
-    """Fuse two ranked lists by sum of 1/(k + rank). Ties broken by insertion order."""
+             top_n: int = 30, anchor: bool = True) -> list[RetrievedChunk]:
+    """Fuse two ranked lists by sum of 1/(k + rank). Ties broken by insertion order.
+
+    `anchor` keeps each arm's rank-1 result in the fused top-2. **Measured defect it
+    fixes (FC-9):** plain RRF scores a chunk found only by dense at rank 1 as
+    1/(60+1) = 0.0164, while a chunk ranked 4th by dense *and* 6th by BM25 scores
+    1/64 + 1/66 = 0.0308 — nearly double. So "mediocre in both" outranks "best in one",
+    by construction. On kw-05 ("What does Microsoft report about Azure?") that pushed
+    the correct chunk from rank 1 to outside the top 5 and took MRR from 1.00 to 0.00;
+    across the set, unanchored hybrid scored *below* dense alone (MRR 0.500 vs 0.613).
+    Rank-only fusion throws away the one thing a rank-1 hit tells you, and this puts
+    exactly that back without tuning a weight on the eval set.
+    """
     scores: dict[str, float] = {}
     by_id: dict[str, RetrievedChunk] = {}
     for results in (dense, sparse):
@@ -36,11 +47,15 @@ def rrf_fuse(dense: list[RetrievedChunk], sparse: list[RetrievedChunk], k: int =
             # an empty-text dense hit mask the sparse copy that has it.
             if cid not in by_id or (not by_id[cid].text and ch.text):
                 by_id[cid] = ch
-    ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    ranked = [cid for cid, _ in sorted(scores.items(), key=lambda x: x[1], reverse=True)]
+    if anchor:
+        leaders = [lst[0].meta.chunk_id for lst in (dense, sparse) if lst]
+        ranked = leaders + [cid for cid in ranked if cid not in leaders]
     out = []
-    for cid, s in ranked:
+    for cid in ranked[:top_n]:
         ch = by_id[cid]
-        out.append(RetrievedChunk(meta=ch.meta, text=ch.text, score=s, retriever="hybrid"))
+        out.append(RetrievedChunk(meta=ch.meta, text=ch.text, score=scores[cid],
+                                  retriever="hybrid"))
     return out
 
 

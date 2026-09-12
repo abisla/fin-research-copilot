@@ -91,7 +91,16 @@ def main():
         d30 = r.search(rare, mode="dense", top_k=cfg["dense_top_k"])
         s30 = r.search(rare, mode="bm25", top_k=cfg["sparse_top_k"])
         fused = rrf_fuse(d30, s30, k=cfg["rrf_k"], top_n=cfg["dense_top_k"])
-        assert descending(fused), "fused list not sorted"
+        # Anchoring (FC-9) promotes each arm's rank-1 hit to the front, so the emitted
+        # order is no longer globally score-descending — deliberately. The scores stay
+        # truthful RRF values rather than being inflated to preserve the old invariant,
+        # so the invariant is checked on the tail, past the anchored leaders.
+        assert descending(fused[2:]), "fused tail not sorted below the anchored leaders"
+        anchors = {d30[0].meta.chunk_id, s30[0].meta.chunk_id}
+        assert anchors <= set(ids(fused[:2])), "each arm's top hit must survive fusion"
+        unanchored = rrf_fuse(d30, s30, k=cfg["rrf_k"], top_n=cfg["dense_top_k"],
+                              anchor=False)
+        assert descending(unanchored), "unanchored fusion must still be score-sorted"
         assert len(set(ids(fused))) == len(fused), "RRF emitted duplicate chunk_ids"
         assert all(f.retriever == "hybrid" and f.text for f in fused)
         both = set(ids(d30)) & set(ids(s30))
@@ -130,7 +139,9 @@ def main():
         for mode in MODES:
             res = r.search(rare, mode=mode, top_k=5, filters=Filters(tickers=["NVDA"]))
             assert all(h.meta.ticker == "NVDA" for h in res), f"{mode} leaked a ticker"
-            assert descending(res) and len(res) <= 5
+            assert len(res) <= 5
+            # hybrid anchors each arm's leader (FC-9), so only its tail is score-sorted.
+            assert descending(res[2:] if mode == "hybrid" else res), f"{mode} not sorted"
             print(f"{mode:7s} -> {len(res)} hits, top={res[0].meta.chunk_id if res else '-'} "
                   f"score={res[0].score:.4f}" if res else f"{mode:7s} -> 0 hits")
 

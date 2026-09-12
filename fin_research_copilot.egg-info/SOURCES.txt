@@ -32,3 +32,6 @@ src/retrieval/sparse.py
 src/router/__init__.py
 src/router/router.py
 src/structured/__init__.py
+src/structured/financials.py
+src/structured/guidance.py
+src/structured/queries.py

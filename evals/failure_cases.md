@@ -121,5 +121,66 @@ whether the generator declined rather than whether it retrieved.
 
 ---
 
+## FC-4 — Syndicated-news inflation, and what dedup can't reach (fixed + open)
+
+CLAUDE.md names "syndicated-news-inflation" as a required failure case. On a live
+7-day window it showed up in **three distinct forms**, only one of which dedup solves.
+
+**1. Literal syndication — fixed by URL+embedding dedup.** Google News assigns a
+*unique* redirect URL to every item, so the same wire story from twenty outlets
+arrives as twenty distinct URLs. Exact-URL dedup collapses none of it. The
+headline-embedding pass (cosine ≥ 0.90, earliest kept) catches them: an identical
+JPM headline arriving from both the Google and Yahoo feeds was correctly flagged,
+with the earliest copy surviving.
+
+**2. Company-name similarity inflation — fixed by normalization (DECISIONS #22).**
+The configured 0.75 threshold merged 39 unrelated NVDA articles into one "event"
+because the shared company name adds a constant ~0.13 to every pairwise cosine.
+Measured: 690 spurious above-threshold pairs before normalization, 51 after.
+
+**3. Bot-generated volume — *not* a dedup problem (open).** MarketBeat posted 18 JPM
+articles in one week: "$JPM Shares Acquired by Acumen Wealth Advisors LLC",
+"...by Todd Asset Management LLC", and so on — one per 13F filing. These are
+genuinely *different* stories with different entities, so dedup correctly leaves them
+alone, and they clustered into one 18-article event. Ranked by article count that is
+the week's top story. It is not news.
+
+Mitigated by capping volume in the ranker (DECISIONS #23) so 2 real sources outrank
+18 single-source posts — but the articles are still in the corpus, still inflate
+`count(*)` for JPM, and would still be retrieved by a NEWS query that filters only on
+ticker and date. A source-quality prior or a template-detection pass is the real fix;
+neither is in v1.
+
+**Phase 7 measurement.** Precision@5 on NEWS-route questions, scored on whether the
+returned events are things a human analyst would call news. The prediction is that JPM
+scores worst of the three tickers, because it has no IR feed (DECISIONS #21) and the
+highest bot-post share.
+
+---
+
+## FC-5 — Headline clustering yields topics, not events (open)
+
+**Observed** after the FC-4 normalization fix. The resulting clusters are coherent but
+they are *themes*, not discrete events: NVDA's top cluster is five outlets publishing
+price predictions, JPM's is generic "is JPM a buy" commentary pages. A real discrete
+event ("India lifts ban on JPMorgan unit, broker in market-manipulation case") appears
+in only 2 articles and ranks second.
+
+**Cause:** these feeds are dominated by commentary rather than reporting, and 181 of
+206 articles are headline-only (Google redirects, DECISIONS #21), so clustering has
+roughly ten words per article to work with. Ten words about one company, with the
+company name removed, is mostly sentiment vocabulary — which is exactly what clusters.
+
+**Why it's recorded rather than fixed:** the honest fix is better source material
+(full text, or feeds weighted toward reporting over commentary), not a better
+clustering algorithm. Tuning linkage or threshold would move articles between topic
+buckets without making topic buckets into events.
+
+**Phase 7 measurement.** Hand-label one week of NVDA clusters as event vs theme and
+report the ratio, alongside whether the brief's top-3 overlaps an analyst's top-3.
+This is the number that says whether the news pipeline is useful or merely working.
+
+---
+
 <!-- Remaining required cases (CLAUDE.md Phase 7): dense-wins, stale-doc-outranks-fresh,
-     chunk-boundary, syndicated-news-inflation. Add as found during eval. -->
+     chunk-boundary. Add as found during eval. -->

@@ -3,7 +3,7 @@
 Production-style RAG system over SEC filings, structured financials (XBRL → Postgres), and ticker news.
 Hybrid retrieval (dense + BM25 + RRF), cross-encoder reranking, query routing, citation-enforced generation, and measured evals (dense vs hybrid vs hybrid+rerank).
 
-**Status: Phase 4 (structured financials) complete — XBRL quarterly metrics + canned SQL queries. Next: Phase 5 (news pipeline).** Build order and full spec: [CLAUDE.md](CLAUDE.md). Decisions log: [DECISIONS.md](DECISIONS.md). Known failures: [evals/failure_cases.md](evals/failure_cases.md).
+**Status: Phase 5 (news pipeline) complete — RSS ingest, dedup, event clustering, ranked weekly brief. Next: Phase 6 (router + generation).** Build order and full spec: [CLAUDE.md](CLAUDE.md). Decisions log: [DECISIONS.md](DECISIONS.md). Known failures: [evals/failure_cases.md](evals/failure_cases.md).
 
 ## Quickstart
 ```bash
@@ -17,6 +17,9 @@ python scripts/build_index.py    # Phase 2: parse -> chunk -> embed -> Qdrant + 
 python scripts/smoke_retrieval.py # gate for Phase 3: retrieval stack on the real corpus
 python scripts/load_financials.py # Phase 4: XBRL companyfacts -> financials + guidance
 python scripts/smoke_financials.py # gate for Phase 4
+python scripts/ingest_news.py     # Phase 5: RSS -> dedup -> event clusters
+python scripts/smoke_news.py      # gate for Phase 5
+python scripts/news_brief.py --ticker NVDA   # weekly intelligence brief
 ```
 
 ## Index layout
@@ -73,8 +76,28 @@ queries.run(conn, "yoy_growth", ticker="NVDA", metric="revenue", n_quarters=4)
 
 Growth is computed against the **named** prior period, so a hole in the series (Q4 EPS is never derived) returns "not comparable" instead of silently comparing Q1 to Q3 — [DECISIONS.md](DECISIONS.md) #20.
 
+## News pipeline
+Hard filters first: ticker and date are a SQL `WHERE`, never a similarity search. Clustering happens at ingest; the brief reads `event_id` as a column.
+
+```
+RSS (Google News + Yahoo + company IR)
+  -> alias relevance filter        (Yahoo's ticker feed leaks generic finance content)
+  -> exact-URL dedup
+  -> headline-embedding dedup      (cosine >= 0.90, earliest copy wins)
+  -> agglomerative clustering      (cosine >= 0.75, average linkage) -> event_id
+  -> rank by source diversity      (volume capped so it can only break ties)
+  -> LLM summary w/ bull/bear      (extractive fallback when no backend is reachable)
+```
+
+Two findings shaped this and are worth reading before trusting the output:
+
+**Headlines are dominated by the company name.** Every NVDA headline contains "Nvidia", `(NASDAQ:NVDA)` and a ` - Publisher` suffix, adding a *constant* ~0.13 to every pairwise cosine. At the configured 0.75 threshold that merged 39 unrelated articles into one "event". Stripping those three elements before embedding cut spurious above-threshold pairs from 690 to 51 — [DECISIONS.md](DECISIONS.md) #22. The stored headline stays verbatim; only the vectors are normalized.
+
+**Article count is the wrong importance signal.** The biggest JPM cluster in a live window was 18 automated 13F posts from one publisher. Ranking is `n_sources + 0.25 * min(n_articles, 3)`, so n articles from one source can never outrank n+1 sources — [DECISIONS.md](DECISIONS.md) #23, [failure_cases.md](evals/failure_cases.md) FC-4.
+
 ## Data sources and limitations
 - **Filings**: SEC EDGAR (`data.sec.gov` submissions API + `www.sec.gov/Archives`), free, no key required. Fair-access rate limiting and a contact-email User-Agent are enforced per config.
+- **News**: Google News RSS gives the broadest coverage but its links are opaque redirects to a JS interstitial, so the real article URL is unrecoverable and those items are **headline-only** (25 of 206 articles have body text). Yahoo Finance RSS gives direct URLs that trafilatura can usually extract. Company IR feeds are used where one exists and is current — NVDA's works, MSFT's is over a year stale, JPM has none. See [DECISIONS.md](DECISIONS.md) #21.
 - **Guidance**: extracted from 8-K EX-99.1 outlook blocks by regex, not LLM. NVDA publishes numeric guidance; MSFT's outlook section defers to the earnings call and JPM issues none, so those are legitimately empty — see [evals/failure_cases.md](evals/failure_cases.md) FC-3.
 - **Earnings call transcripts**: not sourced. Paid providers are out of scope, and free scrapes of licensed transcript sites (e.g. Motley Fool) aren't permitted. The substitute is the **8-K EX-99.1 earnings press release**, which SEC filers publish freely alongside the numbers — see [DECISIONS.md](DECISIONS.md) #10 for how that exhibit is located (EDGAR's own document-type metadata, not filename guessing).
 

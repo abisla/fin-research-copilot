@@ -55,5 +55,41 @@ generation:
 
 news:
   lookback_days: 7
-  dedup_headline_sim: 0.90
-  event_cluster_threshold: 0.75
+  dedup_headline_sim: 0.90      # cosine over headline embeddings -> near-duplicate
+  event_cluster_threshold: 0.75 # cosine -> same event (agglomerative, average linkage)
+  max_per_feed: 60
+  fetch_text: true              # trafilatura body fetch for direct publisher URLs
+  fetch_timeout: 20
+
+  # Google News gives broad coverage but opaque redirect URLs (headline-only).
+  # Yahoo gives direct publisher URLs (body extractable) but leaks unrelated
+  # syndicated finance content, so headlines are alias-filtered. See DECISIONS #21.
+  feeds:
+    google_news: "https://news.google.com/rss/search?q={query}+when:{days}d&hl=en-US&gl=US&ceid=US:en"
+    yahoo: "https://feeds.finance.yahoo.com/rss/2.0/headline?s={ticker}&region=US&lang=en-US"
+
+  # Company IR feeds, where one is published. JPM has no working public RSS
+  # (jpmorganchase.com/news-stories/rss -> 301), so it relies on the two above.
+  ir_feeds:
+    NVDA: "https://nvidianews.nvidia.com/releases.xml"
+    MSFT: "https://news.microsoft.com/feed/"
+
+  queries:
+    NVDA: "NVIDIA NVDA stock"
+    MSFT: "Microsoft MSFT stock"
+    JPM: "JPMorgan Chase JPM stock"
+
+  # Relevance filter for feeds that aren't strictly ticker-scoped.
+  aliases:
+    NVDA: ["nvidia", "nvda"]
+    MSFT: ["microsoft", "msft"]
+    JPM: ["jpmorgan", "jp morgan", "jpmorgan chase", "jpm"]
+
+  # Rule-based topic tags, first match wins. Keeps the brief groupable without an LLM.
+  topics:
+    earnings: ["earnings", "quarterly results", "beats", "misses", "revenue", "eps", "guidance"]
+    product: ["launch", "unveil", "announce", "release", "chip", "gpu", "model", "platform"]
+    regulatory: ["sec ", "antitrust", "regulator", "probe", "investigation", "lawsuit", "fine"]
+    analyst: ["price target", "upgrade", "downgrade", "analyst", "rating", "prediction", "forecast", "valuation"]
+    deal: ["acquisition", "acquire", "merger", "partnership", "stake in", "buyout", "joint venture"]
+    macro: ["tariff", "export", "china", "fed", "rates", "inflation"]

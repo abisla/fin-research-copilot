@@ -31,9 +31,12 @@ def main():
     # --- feed wiring -----------------------------------------------------
     urls = ingest.feed_urls("NVDA", 7)
     assert "NVIDIA" in urls["google_news"] and "when:7d" in urls["google_news"]
-    assert "s=NVDA" in urls["yahoo"] and "ir" in urls           # NVDA has an IR feed
-    assert "ir" not in ingest.feed_urls("JPM", 7), "JPM has no working IR feed"
-    print(f"feeds ok   - NVDA: {sorted(urls)}; JPM: {sorted(ingest.feed_urls('JPM', 7))}")
+    assert "s=NVDA" in urls["yahoo"]
+    assert list(urls) == ["ir", "yahoo", "google_news"], \
+        f"direct feeds must lead and Google backfill last, got {list(urls)}"
+    for t in CFG["tickers"]:
+        assert "ir" in ingest.feed_urls(t, 7), f"{t} lost its IR feed"
+    print(f"feeds ok   - order {list(urls)}; all {len(CFG['tickers'])} tickers have an IR feed")
 
     # --- relevance filter: the Yahoo feed leaks unrelated finance content --
     assert ingest.is_relevant("Nvidia beats on Q3 revenue", "NVDA")

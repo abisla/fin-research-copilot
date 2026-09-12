@@ -184,3 +184,59 @@ This is the number that says whether the news pipeline is useful or merely worki
 
 <!-- Remaining required cases (CLAUDE.md Phase 7): dense-wins, stale-doc-outranks-fresh,
      chunk-boundary. Add as found during eval. -->
+
+## FC-6 — The summarizer invents from headlines, and cites while doing it (fixed)
+
+**Symptom.** The NVDA weekly brief asserted that analysts and investors "cite its
+dominance in the AI and gaming markets", and attributed results to "a diversified
+product portfolio, including its successful graphics processing units (GPUs) and
+artificial intelligence (AI) offerings" — while citing [1] and [2]. Neither claim is
+in either article. The model had two headlines and nothing else.
+
+**Why it happened.** Two defects that only bite together.
+
+1. `brief._numbered_context` passed **headlines only** and never the body text, so the
+   trafilatura extraction that ingestion performs was discarded before reaching the
+   prompt — and a full-text article was byte-identical to a headline-only one from the
+   model's point of view.
+2. `EVENT_SUMMARY_SYSTEM` demanded "potential market impact, bull implication, bear
+   implication" unconditionally. With one line of evidence, that is an instruction to
+   invent.
+
+176 of 216 collected articles are Google News redirects with unrecoverable bodies, so
+this was the *typical* case, not an edge one. And a headline reads like sufficient
+context — which is what makes it more dangerous than an empty source. The citation is
+the aggravating factor: it makes invention look sourced, so the reader's normal
+defence (check the citation) confirms the wrong thing.
+
+**Fix.** Label each article `FULL TEXT` or `HEADLINE ONLY` in the context and include a
+body excerpt when one exists; add an evidence rule to the prompt that overrides the
+output format; require the exact sentence "Not supported by headline-only sources." for
+the four interpretive sections when the whole cluster is headline-only. See DECISIONS #25.
+
+**Regression test.** `scripts/smoke_headline_only.py` — a fixture of three headlines that
+state what happened and never why, so any cause, attribution or figure is fabricated by
+construction. Deterministic regex properties, not an LLM judge: the judge shares the
+generator's blind spot and cannot fail a build. Runs N trials because generation is
+stochastic.
+
+**What writing the test taught.** The first draft asserted the obvious phrases
+("analysts say", "due to") and caught essentially nothing — against the pre-fix prompt
+it fired on one check, the decline sentence, which is circular. Reading the real
+pre-fix output showed the model rarely attributes to a named group; it writes "is seen
+as a strategic expansion", "are expected to support", "is likely to have a positive
+impact". Agentless hedging that reads as analysis. Widening to that class took the
+negative control from 1 violation per trial to 7-10. **A gate you have not watched fail
+is not a gate.**
+
+**Evidence.** `evals/before_realtext_NVDA.md` and `evals/after_realtext_NVDA.md`, same
+ticker and window. After: 4/4 fixture trials clean, 3/3 headline-only events in the live
+brief decline their implications, and the two events that do carry body text still cite
+real figures ("revenue surged 106% year over year to $96.2 billion") that appear verbatim
+in the article bodies.
+
+**Still open.** For an all-headline-only cluster the generated summary now degenerates to
+roughly a list of the headlines — close to what the deterministic extractive fallback
+already produces. That is the honest output for that input, but it means the LLM earns
+its place on full-text clusters and barely any on headline-only ones. The lever worth
+pulling is body-text coverage (currently 37/209), not more prompt tuning.

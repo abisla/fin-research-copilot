@@ -19,6 +19,7 @@ python scripts/load_financials.py # Phase 4: XBRL companyfacts -> financials + g
 python scripts/smoke_financials.py # gate for Phase 4
 python scripts/ingest_news.py     # Phase 5: RSS -> dedup -> event clusters
 python scripts/smoke_news.py      # gate for Phase 5
+python scripts/smoke_headline_only.py   # gate: no claims beyond the headlines (FC-6)
 python scripts/news_brief.py --ticker NVDA   # weekly intelligence brief
 ```
 

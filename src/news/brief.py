@@ -48,6 +48,11 @@ class Article:
     url: str
     topic: str | None
     is_duplicate: bool
+    text: str | None = None         # None = headline-only (Google redirect or blocked)
+
+    @property
+    def headline_only(self) -> bool:
+        return not (self.text or "").strip()
 
 
 @dataclass
@@ -119,7 +124,7 @@ def load_events(conn, ticker: str, days: int | None = None,
     cur = conn.cursor()
     cur.execute(
         "SELECT article_id, ticker, event_id, headline, source, published_at, url, "
-        f"topic, is_duplicate FROM news_articles WHERE ticker = {ph} "
+        f"topic, is_duplicate, text FROM news_articles WHERE ticker = {ph} "
         f"AND published_at >= {ph} ORDER BY published_at",
         (ticker, since.isoformat() if ph == "?" else since))
 
@@ -132,7 +137,7 @@ def load_events(conn, ticker: str, days: int | None = None,
         events.setdefault(eid, Event(event_id=eid, ticker=row[1])).articles.append(
             Article(article_id=row[0], headline=row[3], source=row[4],
                     published_at=published, url=row[6], topic=row[7],
-                    is_duplicate=bool(row[8])))
+                    is_duplicate=bool(row[8]), text=row[9]))
     return [e for e in events.values() if e.live]
 
 
@@ -140,18 +145,41 @@ def rank_events(events: list[Event], top_n: int = 5) -> list[Event]:
     return sorted(events, key=score_event, reverse=True)[:top_n]
 
 
+BODY_EXCERPT_CHARS = 1500
+
+
 def _numbered_context(event: Event) -> str:
-    return "\n".join(
-        f"[{i}] ({a.published_at.date()}, {a.source or 'unknown'}) {a.headline}"
-        for i, a in enumerate(event.live, start=1))
+    """Number the articles and label each one with how much evidence it carries.
+
+    Until now this passed headlines only, so body text that ingestion had gone to the
+    trouble of extracting never reached the model — and, worse, an article with no body
+    was indistinguishable from one with a body. The model saw a bare headline and
+    filled the gap from parametric knowledge about the company (FC-3). The label is
+    what the prompt's evidence rule keys on, so it is not decoration.
+    """
+    lines = []
+    for i, a in enumerate(event.live, start=1):
+        head = f"[{i}] ({a.published_at.date()}, {a.source or 'unknown'})"
+        if a.headline_only:
+            lines.append(f"{head} HEADLINE ONLY — no body text available.\n"
+                         f"    Headline: {a.headline}")
+        else:
+            body = " ".join(a.text.split())[:BODY_EXCERPT_CHARS]
+            lines.append(f"{head} FULL TEXT\n    Headline: {a.headline}\n"
+                         f"    Body: {body}")
+    return "\n".join(lines)
 
 
 def summarize_event(event: Event, ticker: str, use_llm: bool = True) -> Event:
     """Attach a summary. Falls back to extractive when no LLM backend is reachable."""
     if use_llm and available():
-        user = (f"Ticker: {ticker}\nArticles about one event:\n{_numbered_context(event)}\n\n"
-                "Summarize this event and give bull and bear implications. "
-                "Cite article numbers inline like [1].")
+        n_full = sum(1 for a in event.live if not a.headline_only)
+        user = (f"Ticker: {ticker}\nArticles about one event "
+                f"({n_full} with full text, {len(event.live) - n_full} headline-only):\n"
+                f"{_numbered_context(event)}\n\n"
+                "Summarize this event. Give bull and bear implications only where a "
+                "FULL TEXT article supports them; otherwise use the exact sentence the "
+                "evidence rule specifies. Cite article numbers inline like [1].")
         try:
             event.summary = complete(EVENT_SUMMARY_SYSTEM, user)
             event.summary_method = "llm"

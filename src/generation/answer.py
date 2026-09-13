@@ -40,6 +40,8 @@ class Evidence:
     label: str                  # provenance line the model and the UI both see
     text: str
     url: str | None = None
+    score: float | None = None   # retriever score, when the item came from a ranked list
+    retriever: str | None = None # which arm produced it — the UI shows dense/rrf/cross-encoder
 
     def render(self, n: int) -> str:
         return f"[{n}] ({self.label})\n{self.text}"
@@ -54,15 +56,21 @@ def build_context(evidence: list[Evidence]) -> str:
 # --- evidence gathering ------------------------------------------------------
 
 def filing_evidence(retriever, query: str, tickers: list[str],
-                    top_k: int | None = None, mode: str = "rerank") -> list[Evidence]:
+                    top_k: int | None = None, mode: str = "rerank",
+                    overrides: Filters | None = None) -> list[Evidence]:
     """Filing chunks via the Phase 3 stack.
 
     Only the ticker filter is carried over from the router, never its date window: a
     risk factor disclosed in last year's 10-K is not stale the way a news article is,
     and applying a 7-day bound to filings would empty the context on every NEWS-ish
     phrasing of a filing question.
+
+    `overrides` is the one exception, and it exists for the Phase 8 sidebar: a filter a
+    human set explicitly outranks one the router inferred, including a date bound. It
+    is passed in rather than read from the decision so that the inference path stays
+    exactly what Phase 7 measured.
     """
-    filters = Filters(tickers=tickers or None)
+    filters = overrides or Filters(tickers=tickers or None)
     hits = retriever.search(query, mode=mode,
                             top_k=top_k or CFG["retrieval"]["final_top_k"],
                             filters=filters)
@@ -78,7 +86,8 @@ def filing_evidence(retriever, query: str, tickers: list[str],
         # The chunk_id tail is the only thing that distinguishes them.
         label += f" · #{m.chunk_id.rsplit('::', 1)[-1]}"
         out.append(Evidence(key=m.chunk_id, kind="filing", label=label,
-                            text=h.text[:FILING_BODY_CHARS], url=m.source_url))
+                            text=h.text[:FILING_BODY_CHARS], url=m.source_url,
+                            score=h.score, retriever=h.retriever))
     return out
 
 
@@ -151,20 +160,29 @@ def financial_evidence(conn, plan: tuple[str, dict] | None) -> list[Evidence]:
         text="\n".join(lines))]
 
 
-def gather(conn, decision: RouteDecision, retriever=None,
-           mode: str = "rerank") -> list[Evidence]:
-    """Assemble the context for a route. The route decides which stores are consulted."""
+def gather(conn, decision: RouteDecision, retriever=None, mode: str = "rerank",
+           overrides: Filters | None = None, top_k: int | None = None) -> list[Evidence]:
+    """Assemble the context for a route. The route decides which stores are consulted.
+
+    `overrides` carries explicitly-set filters (the Streamlit sidebar) into both the
+    filing search and the news window; None means the router's own inference stands,
+    which is the path the evals exercise.
+    """
     route = decision.route
     evidence: list[Evidence] = []
+    date_from = (overrides.date_from if overrides and overrides.date_from
+                 else decision.filters.date_from)
+    tickers = (overrides.tickers if overrides and overrides.tickers else decision.tickers)
 
     if route in ("NUMERIC", "MIXED", "CROSS_SOURCE"):
         evidence += financial_evidence(conn, decision.query_plan)
     # NEWS always; CROSS_SOURCE only when the query actually asked about news, so
     # "compare NVDA and MSFT revenue" stays a numbers-and-filings answer.
     if route == "NEWS" or (route == "CROSS_SOURCE" and decision.news_signal):
-        evidence += news_evidence(conn, decision.tickers, decision.filters.date_from)
+        evidence += news_evidence(conn, tickers, date_from)
     if route in ("FILING_RAG", "MIXED", "CROSS_SOURCE") and retriever is not None:
-        evidence += filing_evidence(retriever, decision.query, decision.tickers, mode=mode)
+        evidence += filing_evidence(retriever, decision.query, tickers, mode=mode,
+                                    overrides=overrides, top_k=top_k)
     return evidence
 
 

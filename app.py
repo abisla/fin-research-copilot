@@ -154,6 +154,15 @@ def render_answer(ans) -> None:
     else:
         st.markdown(ans.text)
 
+    failed = next((v for v in ans.validation if not v.passed), None)
+    if failed:
+        with st.expander(f"Withheld by the {failed.name} check — why, and what the model wrote"):
+            st.write(failed.detail)
+            for item in failed.items[:10]:
+                st.code(item, language=None)
+            st.caption("Fail-closed: no regeneration. The draft below was not shown as the answer.")
+            st.text(ans.rejected_text or "")
+
     if ans.hallucinated_citations:
         st.error(
             f"Stripped hallucinated citation(s) {ans.hallucinated_citations} — the model "

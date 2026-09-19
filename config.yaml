@@ -52,6 +52,10 @@ generation:
   ollama_model: "llama3.1:8b"
   ollama_url: "http://localhost:11434"
   temperature: 0.1
+  validation:                # post-generation chain; fail closed to INSUFFICIENT EVIDENCE
+    enabled: true
+    min_citation_coverage: 0.8   # share of claim sentences that must carry a [n]
+    min_grounding_overlap: 0.5   # share of a sentence's content words found in its cited item
 
 news:
   lookback_days: 7

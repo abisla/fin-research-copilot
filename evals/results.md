@@ -94,3 +94,61 @@ Citation validity is decided by `answer.check_citations`, not by the judge — w
 `[7]` exists when six items were supplied is decidable, and the judge is demonstrably
 unreliable on it (it scored citation_correctness 5/5 on an answer carrying zero
 citations). The judge is used only for the part that needs reading.
+
+<!-- validation-eval -->
+## Validation chain: before / after
+
+Run `20260919T184714` · 40 questions (34 answerable, 6 insufficient-evidence) ·
+retrieval evidence shared between arms, generation run twice (`validate=False` / `validate=True`).
+
+> **Development numbers.** The 80% citation-coverage and 50% grounding-overlap thresholds
+> were tuned on this same 40-question set (and the validator's regexes were fixed against
+> its failures), so these figures are optimistic about how the chain behaves on unseen
+> questions and are not a held-out estimate. Generation is stochastic (temperature 0.1):
+> the two arms are independent draws, so small differences are within sampling noise.
+> The "paired" row applies the chain to the off-arm's own text and is the noise-free
+> read of what the chain rejects.
+
+| metric | validation off | validation on |
+|---|---|---|
+| citation-contract compliance (answers that cite validly, or decline) | 30/40 (0.75) | 38/40 (0.95) |
+| unsupported-figure rate (answers showing a figure not in the evidence) | 0/40 (0.00) | 0/40 (0.00) |
+| refusal rate, all questions | 7/40 (0.17) | 20/40 (0.50) |
+| refusals on *answerable* questions (34) | 2 | 14 |
+| refusals on insufficient-evidence questions (6) | 5 | 6 |
+| answers withheld by the chain | — | 14/40 {'citation_coverage': 13, 'grounding': 1} |
+| paired: off-arm answers the chain would withhold | 18/40 {'citation_coverage': 15, 'grounding': 3} | — |
+
+How to read it:
+- **Compliance is close to true by construction** in the on arm: the chain's coverage check
+  is most of the definition, so 100% there is the mechanism working, not independent
+  evidence. The independent signals are the off-arm number and the withheld count.
+- **Unsupported figures** counts answers whose *shown* text has a checkable figure absent
+  from every evidence item (`validate_numeric`). A withheld answer shows a refusal, so it
+  scores 0 — the price is the withheld count and the extra refusals on answerable questions.
+- Refusal = the sentinel or the eval's refusal pattern in the first 400 characters. The
+  chain converts a bad answer into a sentinel refusal, so **refusals on answerable
+  questions is the cost column**: each is an answer the system had (possibly a good one)
+  and did not give.
+- Not measured here: whether withheld answers were *right*. The chain checks that text is
+  supported by evidence, not that the evidence answers the question (stale-period figures
+  pass, see FC-14).
+
+Findings from this run (written by hand after reading `evals/validation_eval.json`; a re-run
+of `python -m src.evals.validation_eval` regenerates the table above but not this list):
+- **The numeric validator did not fire in either arm.** 0/40 answers showed a figure absent
+  from the evidence with validation off, so on this run the withheld answers are all
+  coverage (13) or grounding (1). The FC-14 scenario is covered by the offline gate
+  (`scripts/smoke_validate.py`), not demonstrated by this eval; this set cannot show the
+  numeric check helping.
+- **The trade is compliance for refusals.** Compliance 30/40 -> 38/40, at the cost of 12 more
+  refusals on answerable questions (2 -> 14). Insufficient-evidence questions were declined
+  6/6 with the chain vs 5/6 without.
+- **Sampling noise is visible:** the on arm withheld 14, while the same chain applied to the
+  off arm's own text would have withheld 18. Read the withheld count as roughly 14-18 of 40.
+- **Two answers passed the chain while breaching the contract** (the 2 non-compliant on-arm
+  rows), both real holes, neither fixed here so the numbers above stay reproducible:
+  `temp-04` ("NVIDIA did not mention Blackwell demand in its most recent filing...") is an
+  *uncited factual negative* that the absence-statement exemption waves through;
+  `num-01` (`$96.22B`, no citation) is under the 4-word minimum, so a bare uncited figure is
+  not treated as a claim at all.

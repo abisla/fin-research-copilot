@@ -54,6 +54,8 @@ class Answer:
     hallucinated_citations: list[int] = field(default_factory=list)
     evidence: list = field(default_factory=list)         # list[answer.Evidence]; untyped to avoid a cycle
     decision: object | None = None                       # router.RouteDecision
+    validation: list = field(default_factory=list)       # list[answer.Verdict]; chain results
+    rejected_text: str | None = None                     # what the chain withheld, for audit
 
     @property
     def uncited(self) -> bool:

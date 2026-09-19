@@ -1,0 +1,1278 @@
+{
+ "run_id": "20260919T184714",
+ "summary": {
+  "n": 40,
+  "off": {
+   "compliance": 0.75,
+   "compliance_n": 30,
+   "unsupported_rate": 0.0,
+   "unsupported_n": 0,
+   "refusal_rate": 0.175,
+   "refusal_n": 7,
+   "false_refusal_n": 2,
+   "correct_refusal_n": 5,
+   "withheld_n": 0,
+   "withheld_by": {}
+  },
+  "on": {
+   "compliance": 0.95,
+   "compliance_n": 38,
+   "unsupported_rate": 0.0,
+   "unsupported_n": 0,
+   "refusal_rate": 0.5,
+   "refusal_n": 20,
+   "false_refusal_n": 14,
+   "correct_refusal_n": 6,
+   "withheld_n": 14,
+   "withheld_by": {
+    "citation_coverage": 13,
+    "grounding": 1
+   }
+  },
+  "n_answerable": 34,
+  "n_ie": 6,
+  "paired_withhold_n": 18,
+  "paired_by": {
+   "citation_coverage": 15,
+   "grounding": 3
+  },
+  "paired_withhold_by_cat": {
+   "semantic": 6,
+   "exact_keyword": 3,
+   "temporal": 3,
+   "numeric": 2,
+   "cross_document": 3,
+   "insufficient_evidence": 1
+  }
+ },
+ "results": [
+  {
+   "id": "sem-01",
+   "category": "semantic",
+   "query": "What did NVIDIA management say about China export restrictions?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 6,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "Facts\n- Export controls have and are likely in the future to have a disproportionate impact on NVIDIA (1, 3, 5).\n- Export controls have already and may in the future encourage customers outside China and other impacted regions to \u201cdesign-out\u201d certain U.S. semiconductors from their products (1, 3, 5).\n- Export controls have already encouraged and may in the future encourage overseas governments to request that our customers purchase from our competitors rather than NVIDIA or other U.S. firms (1, 4).\n- The USG has already imposed export controls restricting certain gaming GPUs (2, 5, 6).\n- Export controls may disrupt a significant portion of NVIDIA's supply and distribution chain (2, 5).\n- Export controls may have a greater impact on NVIDIA's ability to compete in markets subject to those controls (2, 5).\n- Export controls may negatively impact demand for NVIDIA's networking products used in servers containing their GPUs (2, 5).\n- The USG may also impose export controls on NVIDIA's networking products, such as high-speed network interconnects (2, 5).\n\nInterpretation\n- NVIDIA management is concerned about the impact of export controls on their business, as they may disadvantage them against competitors that sell chips outside the scope of such control (Facts).\n- The increasing complexity of export controls may lead to a greater burden on NVIDIA's compliance obligations, which could negatively impact their business, relationships with partners and customers, and their reputation ",
+   "on_text": "Facts\n- Export controls have a disproportionate impact on NVIDIA and may disadvantage the company against certain competitors that sell chips outside the scope of such control [1].\n- Export controls have already and may in the future encourage customers outside China and other impacted regions to \"design-out\" certain U.S. semiconductors from their products to reduce the compliance burden and risk [1][2][3][4][5][6].\n- The increasingly complex export controls impose complex and burdensome compliance obligations on NVIDIA's partners, suppliers, and customers [1][2][3][4].\n- Reports of diversion of controlled products, even when unsubstantiated and untrue, may negatively impact NVIDIA's business, relationships with partners and customers, and its reputation [1][2][3][4].\n- Export controls may disrupt NVIDIA's supply and distribution chain for a substantial portion of its products, which are warehoused in and distributed from Hong Kong [2][5].\n- Export controls restricting NVIDIA's ability to sell data center GPUs may also negatively impact demand for its networking products used in servers containing its GPUs [2][5].\n- The USG may impose restrictions on the import and sale of products that incorporate technologies developed or manufactured in whole or in part in China [1][4].\n- The USG has already imposed export controls restricting certain gaming GPUs, and if the USG expands such controls to restrict additional gaming products, it may disrupt a significant portion of NVIDIA's s",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "sem-02",
+   "category": "semantic",
+   "query": "How does Microsoft describe competitive pressure in cloud?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 6,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 4,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "Facts\n- Our industry is dynamic and highly competitive, with frequent changes in both technologies and business models [1][2][3][6].\n- Each industry shift is an opportunity to conceive new products, new technologies, or new ideas that can further transform the industry and our business [1][2][3][6].\n- At Microsoft, we push the boundaries of what is possible through a broad range of research and development activities that seek to identify and address the changing demands of customers and users, industry trends, and competitive forces [1][2][3][6].\n- The markets for software, devices, and cloud-based services are dynamic and highly competitive [1][2][3][6].\n- Our competitors are developing new software and devices, while also deploying competing cloud-based services for consumers and businesses [1][2][3][6].\n- The devices and form factors customers prefer evolve rapidly, influencing how users access services in the cloud and, in some cases, the user\u2019s choice of which suite of cloud-based services to use [1][2][3][6].\n- Aggregate demand for our software, services, and devices is also correlated to global macroeconomic and geopolitical factors, which remain dynamic [1][2][3][6].\n- We have a long-term strategic partnership with OpenAI, which was originally established in 2019 [3][6].\n- Microsoft is a major investor in OpenAI and will continue to receive revenue-sharing payments [3][6].\n- We hold rights to OpenAI\u2019s intellectual property, including models and infrastructure, for in",
+   "on_text": "Facts\n- Our industry is dynamic and highly competitive, with frequent changes in both technologies and business models [1][2][3][6].\n- Each industry shift is an opportunity to conceive new products, new technologies, or new ideas that can further transform the industry and our business [1][2][3][6].\n- At Microsoft, we push the boundaries of what is possible through a broad range of research and development activities that seek to identify and address the changing demands of customers and users, industry trends, and competitive forces [1][2][3][6].\n- The markets for software, devices, and cloud-based services are dynamic and highly competitive [1][2][3][6].\n- Our competitors are developing new software and devices, while also deploying competing cloud-based services for consumers and businesses [1][2][3][6].\n- The devices and form factors customers prefer evolve rapidly, influencing how users access services in the cloud and, in some cases, the user\u2019s choice of which suite of cloud-based services to use [1][2][3][6].\n- Aggregate demand for our software, services, and devices is also correlated to global macroeconomic and geopolitical factors, which remain dynamic [1][2][3][6].\n- We have a long-term strategic partnership with OpenAI, which was originally established in 2019 [3][6].\n- Microsoft is a major investor in OpenAI and will continue to receive revenue-sharing payments [3][6].\n- We hold rights to OpenAI\u2019s intellectual property, including models and infrastructure, for in",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "sem-03",
+   "category": "semantic",
+   "query": "What does NVIDIA say about depending on a small number of large customers?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 5,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "NVIDIA mentions that a small number of large customers are crucial for their revenue and financial performance. \n\nFacts\n- NVIDIA has a limited number of direct and indirect customers, with some individually representing 10% or more of their revenue [2].\n- The company estimates that one AI research and deployment company contributed to a meaningful amount of their revenue in the third quarter of fiscal year 2026 [2].\n- NVIDIA's revenue is concentrated among a limited number of direct, indirect, and cloud service purchasers, and this trend may continue [2].\n- The availability of data centers, energy, and capital to support the buildout of NVIDIA AI infrastructure by their customers is crucial for their future revenue and financial performance [1][3][4][6].\n\nInterpretation\nThis suggests that NVIDIA is heavily reliant on a small number of large customers, which could pose a risk to their revenue and financial performance if these customers were to reduce their purchases or experience financial difficulties.",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "NVIDIA mentions that a small number of large customers can impact their revenue and financial performance. \n\nFacts\n- NVIDIA has a limited number of direct customers, with three direct customers each representing 12% of total revenue in the third quarter of fiscal year 2025 [2].\n- Indirect customer revenue is an estimation based on multiple factors, including customer purchase order information, product specifications, internal sales data, and other sources [2].\n- NVIDIA generates a significant amount of revenue from a limited number of indirect customers, some individually representing 10% or more of their revenue [2].\n- The company estimates that one AI research and deployment company contributed to a meaningful amount of their revenue in the third quarter of fiscal year 2026 [2].\n- NVIDIA's revenue is concentrated among a limited number of direct, indirect, and cloud service purchasers, and this trend may continue [2].\n\nInterpretation\nThis suggests that NVIDIA is heavily reliant on a small number of large customers, which can impact their revenue and financial performance. The company's reliance on these customers is an estimation based on various factors, and the trend may continue, indicating a potential risk to NVIDIA's financial stability.",
+   "rejected_detail": [
+    "only 62% of 8 claims cited (need 80%)"
+   ]
+  },
+  {
+   "id": "sem-04",
+   "category": "semantic",
+   "query": "How does JPMorgan describe the amount of capital regulators require it to hold?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 5,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 2,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "Facts\nJPMorganChase is subject to various regulatory capital requirements [1].\nThe amount of capital that it is required to hold under those requirements could increase at any given time due to factors such as actions by banking regulators, changes in applicable law or how applicable law is implemented by banking regulators, and changes in the composition of JPMorganChase\u2019s balance sheet [1].\nJPMorganChase may use its regulatory capital buffers allowing capital ratios to decline below regulatory requirements, subjecting it to restrictions on capital distributions and discretionary bonus payments to its executive officers [1].\nBanking organizations subject to the Advanced approach are currently required to have a minimum SLR of 3.0% [3].\nCertain banking organizations, including JPMorganChase, are required to hold an additional 2.0% leverage buffer [3].\nThe SLR is defined as Tier 1 capital under Basel III divided by the Firm\u2019s total leverage exposure [3].\nJPMSE is required by the EU Single Resolution Board to maintain MREL [4][6].\nAs of June 30, 2026, JPMSE was compliant with its MREL requirements [4].\nThe following table presents JPMSE\u2019s risk-based and leverage-based capital metrics [4].\nThe U.S. federal regulatory capital standards include a framework for setting a discretionary countercyclical capital buffer taking into account the macro financial environment in which large, internationally active banks function [5].\nAs of December 31, 2025, the U.S. countercyclical capital ",
+   "on_text": "JPMorgan describes the amount of capital regulators require it to hold as a percentage of its total leverage exposure, specifically a minimum SLR of 3.0% [3]. Additionally, the firm is required to hold an additional 2.0% leverage buffer [3]. The capital conservation buffer incorporates a GSIB surcharge, a discretionary countercyclical capital buffer, and a fixed capital conservation buffer of 2.5% for Advanced regulatory capital requirements [5].",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "sem-05",
+   "category": "semantic",
+   "query": "What risks does NVIDIA cite around manufacturing and its suppliers?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 3,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 4,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "grounding",
+   "off_text": "Facts\n- NVIDIA's manufacturing lead times are long, and they have experienced extended lead times of more than 12 months [2].\n- NVIDIA has paid premiums, provided deposits, and entered into long-term supply agreements and capacity commitments to secure future supply and capacity [2].\n- NVIDIA's reliance on third parties to manufacture, assemble, package, and test their products is a risk factor [5].\n- NVIDIA's ability to realize the potential benefits of business investments or acquisitions is a risk factor [6].\n\nInterpretation\n- NVIDIA cites manufacturing and supply chain risks as a concern, including long lead times and uncertain supply and capacity availability [2].\n- This is likely due to NVIDIA's reliance on third-party manufacturers, which can lead to supply chain disruptions and delays [5].\n- As a result, NVIDIA may experience mismatches between supply and demand, which could harm their business, financial condition, and results of operations [2].",
+   "on_text": "Facts\n- NVIDIA cites risks around manufacturing and its suppliers in Item 1A of their Annual Report on Form 10-K for the fiscal year ended January 25, 2026 [1].\n- Long manufacturing lead times and uncertain supply and capacity availability, combined with a failure to estimate customer demand accurately, has led and could in the future lead to mismatches between supply and demand [1][2].\n- NVIDIA has long manufacturing lead times and builds finished products and maintains inventory in advance of anticipated demand [1][2].\n- In periods of shortages impacting the semiconductor industry and/or limited supply or capacity in their supply chain, the lead times for certain supply may be extended [1][2].\n- NVIDIA has paid premiums, provided deposits, and entered into long-term supply agreements and capacity commitments to secure future supply and capacity [1][2].\n- NVIDIA relies on third parties to manufacture, assemble, package, and test their products [5][6].\n\nInterpretation\n- NVIDIA's reliance on third-party manufacturers and suppliers poses a risk to their business, as they may be unable to secure sufficient commitments for capacity to address their business needs [1][2].\n- The long manufacturing lead times and uncertain supply and capacity availability may lead to mismatches between supply and demand, which could harm NVIDIA's business, financial condition, and results of operations [1][2].\n- NVIDIA's reliance on third-party manufacturers and suppliers may also expose them to ris",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "sem-06",
+   "category": "semantic",
+   "query": "How does Microsoft describe its artificial intelligence partnerships?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 3,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "Microsoft describes its artificial intelligence partnerships as long-term strategic partnerships. \n\nFacts\n- We have a long-term strategic partnership with OpenAI which was originally established in 2019 [1].\n- In October 2025, we signed a new definitive agreement with OpenAI that extends this partnership [4].\n- In April 2026, we extended this partnership again [2].\n- Microsoft is a major investor in OpenAI [1][2].\n- We hold rights to OpenAI\u2019s intellectual property, including models and infrastructure, for integration into our products [1][2].\n\nInterpretation\nThis suggests that Microsoft views its partnership with OpenAI as a significant and ongoing commitment to advancing artificial intelligence, with a focus on responsible development and broad accessibility.",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "Microsoft describes its artificial intelligence partnerships as long-term strategic partnerships that aim to advance artificial intelligence responsibly and make its benefits broadly accessible. \n\nFacts\n- Microsoft has a long-term strategic partnership with OpenAI, originally established in 2019 [1].\n- The partnership was extended in October 2025 and April 2026 [1][2][3].\n- Microsoft is a major investor in OpenAI and will continue to receive revenue-sharing payments [1][2][3].\n- Microsoft holds rights to OpenAI\u2019s intellectual property, including models and infrastructure, for integration into its products [1][2][3].\n\nInterpretation\nThis suggests that Microsoft views its partnership with OpenAI as a key component of its AI strategy, aiming to advance AI responsibly and make its benefits accessible to a broad audience. The partnership's long-term nature and Microsoft's significant investment in OpenAI indicate a commitment to this goal.",
+   "rejected_detail": [
+    "only 57% of 7 claims cited (need 80%)"
+   ]
+  },
+  {
+   "id": "sem-07",
+   "category": "semantic",
+   "query": "What does JPMorgan say about how it would hold up in a severe economic downturn?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 5,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 6,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "Facts\nJPMorganChase's fees from managing client assets or holding assets under custody for clients could be diminished by declining asset values or other adverse macroeconomic conditions [1][2].\nHigher interest rates or a market downturn could affect the valuation of client assets that JPMorganChase manages or holds under custody, resulting in lower revenue from fees that are based on the amount of assets under management or custody [1][2].\nAdverse macroeconomic or market conditions could prompt outflows from JPMorganChase funds or accounts, or cause clients to invest in products that generate lower revenue [1][2].\nSubstantial and unexpected withdrawals from a JPMorganChase fund could also hamper the investment performance of the fund, particularly if the outflows create the need for the fund to dispose of fund assets at disadvantageous times [1][2].\nAn economic downturn or sustained changes in consumer behavior that result in shifts in consumer and business spending could also have a negative impact on certain of JPMorganChase\u2019s wholesale clients, and thereby diminish JPMorganChase\u2019s earnings from its wholesale operations [1].\nUnfavorable market and economic conditions could adversely affect JPMorganChase\u2019s wholesale businesses [3].\nThe interconnectivity across credit markets increases the risk that the significant expansion of private credit could worsen losses among non-bank lenders and their borrowers, particularly if stress or defaults spread to broader funding and credi",
+   "on_text": "Facts\n- The fees that JPMorganChase earns from managing client assets or holding assets under custody for clients could be diminished by declining asset values or other adverse macroeconomic conditions [1][2].\n- Higher interest rates or a market downturn could affect the valuation of client assets that JPMorganChase manages or holds under custody, resulting in lower revenue from fees that are based on the amount of assets under management or custody [1][2].\n- Adverse macroeconomic or market conditions could prompt outflows from JPMorganChase funds or accounts, or cause clients to invest in products that generate lower revenue [1][2].\n- An economic downturn or sustained changes in consumer behavior that result in shifts in consumer and business spending could also have a negative impact on certain of JPMorganChase\u2019s wholesale clients [3].\n- Unfavorable market and economic conditions could adversely affect JPMorganChase\u2019s wholesale businesses [3].\n- Any significant and sustained deterioration in market conditions could reduce fee revenue due to lower transaction volumes [3].\n- The profitability of JPMorganChase\u2019s capital markets activities could be impacted if it needs to dispose of portions of credit commitments at a loss or hold larger residual positions in credit commitments that cannot be sold at favorable prices [3].\n- Challenging economic conditions that affect a particular industry or geographic area could lead to concerns about the credit quality of counterparties, borr",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "sem-08",
+   "category": "semantic",
+   "query": "What does NVIDIA say about demand for its newest generation of chips?",
+   "route": "NEWS",
+   "n_evidence": 0,
+   "off": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "INSUFFICIENT EVIDENCE: no news evidence matched ['NVDA']",
+   "on_text": "INSUFFICIENT EVIDENCE: no news evidence matched ['NVDA']",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "sem-09",
+   "category": "semantic",
+   "query": "How does Microsoft describe the risk of a security breach?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 6,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "How does Microsoft describe the risk of a security breach?\n\nFacts\n- Microsoft describes the risk of a security breach as a possibility that they may not be able to protect information in their products and services from use by others [1].\n- They also mention that cyberattacks and security vulnerabilities could lead to reduced revenue, increased costs, liability claims, or harm to their reputation or competitive position [2][3][4][5].\n- The company states that they are under constant and increasing threat from the cybersecurity threat environment [6].\n- They have an escalation process in place to inform senior management and the Board of significant issues [6].\n- Microsoft's CISO leads the strategy, engineering, and operations of cybersecurity across the company, and reports to the EVP of Cloud + AI [6].\n\nInterpretation\nMicrosoft views the risk of a security breach as a significant threat to their business, reputation, and competitive position. They acknowledge that they may not be able to protect information in their products and services, and that cyberattacks and security vulnerabilities could have severe consequences. The company has implemented measures to mitigate this risk, including investing in cybersecurity infrastructure and collaborating with peers and regulators.",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "How does Microsoft describe the risk of a security breach?\n\nFacts\n- Microsoft describes the risk of a security breach as a possibility that they may not be able to protect information in their products and services from use by others [1].\n- They also mention that cyberattacks and security vulnerabilities could lead to reduced revenue, increased costs, liability claims, or harm to their reputation or competitive position [2][3][4][5].\n- The company states that they are under constant and increasing threat from the cybersecurity threat environment [6].\n- They have an escalation process in place to inform senior management and the Board of significant issues [6].\n- Microsoft's CISO leads the strategy, engineering, and operations of cybersecurity across the company, and reports to the EVP of Cloud + AI [6].\n\nInterpretation\nMicrosoft views the risk of a security breach as a significant threat to their business, reputation, and competitive position. They acknowledge that they may not be able to protect information in their products and services from use by others, and that cyberattacks and security vulnerabilities could have severe consequences. The company has implemented measures to mitigate these risks, including investing in cybersecurity infrastructure and collaborating with peers and regulators.",
+   "rejected_detail": [
+    "only 56% of 9 claims cited (need 80%)"
+   ]
+  },
+  {
+   "id": "sem-10",
+   "category": "semantic",
+   "query": "What does JPMorgan say about returning capital to its shareholders?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 3,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 3,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "What does JPMorgan say about returning capital to its shareholders?\n\nFacts\n- JPMorganChase's ability to distribute capital to shareholders could be limited if it does not satisfy applicable regulatory capital requirements [5].\n- The Parent Company's losses and any losses incurred by its subsidiaries would be imposed first on holders of the Parent Company's equity securities and thereafter on its unsecured creditors [1].\n- JPMorganChase's liquidity and cost of funding could be adversely affected by downgrades in its credit ratings [2].\n- Any rating downgrade could also increase the credit spreads charged by market participants for taking credit risk on JPMorgan Chase & Co. and its subsidiaries [2].\n- JPMorganChase may use its regulatory capital buffers allowing capital ratios to decline below regulatory requirements, subjecting it to restrictions on capital distributions [5].\n\nInterpretation\nInference: JPMorganChase's ability to return capital to its shareholders may be restricted due to regulatory capital requirements and potential credit rating downgrades. This is supported by the facts that JPMorganChase's ability to distribute capital to shareholders could be limited if it does not satisfy applicable regulatory capital requirements [5], and that any rating downgrade could also increase the credit spreads charged by market participants for taking credit risk on JPMorgan Chase & Co. and its subsidiaries [2].",
+   "on_text": "Facts\nJPMorganChase's ability to distribute capital to shareholders could be limited if it does not satisfy applicable regulatory capital requirements [5].\nJPMorganChase's liquidity and cost of funding could be adversely affected by downgrades in its credit ratings [2].\nJPMorganChase is subject to various regulatory capital requirements, and the amount of capital that it is required to hold under those requirements could increase at any given time [5].\nJPMorganChase may use its regulatory capital buffers allowing capital ratios to decline below regulatory requirements, subjecting it to restrictions on capital distributions [5].\nThe Parent Company is generally dependent on receiving dividends from JPMorgan Chase Bank, N.A. and dividends and borrowings from the IHC in order to pay interest on its debt securities, pay dividends on its equity securities, redeem or repurchase outstanding securities, and fulfill its other payment obligations [6].\n\nInterpretation\nInference: JPMorganChase's ability to return capital to its shareholders may be limited due to regulatory capital requirements and potential downgrades in its credit ratings.\nSupporting facts: JPMorganChase's ability to distribute capital to shareholders could be limited if it does not satisfy applicable regulatory capital requirements [5], and JPMorganChase's liquidity and cost of funding could be adversely affected by downgrades in its credit ratings [2].",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "kw-01",
+   "category": "exact_keyword",
+   "query": "What is Blackwell?",
+   "route": "MIXED",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 4,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 4,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "What is Blackwell?\n\nBlackwell is a data center-scale infrastructure that includes GPUs, CPUs, DPUs, interconnects, switch chips, and systems, and networking adapters. It excels at processing cutting-edge generative AI and accelerated computing workloads with market-leading performance and efficiency. [3]\n\nBlackwell is a full-stack computing platform that includes a large body of software, including the CUDA development platform, the CUDA-X collection of acceleration libraries, AI models, and training data sets, APIs, SDKs, and domain-specific application frameworks. [3]\n\nBlackwell Ultra is the leading architecture across all customer categories, and the prior Blackwell architecture saw continued strong demand. [4]\n\nBlackwell Data Center revenue grew 17% sequentially. [5]\n\nBlackwell is the AI platform the world has been waiting for, delivering an exceptional generational leap. Production of Blackwell Ultra is ramping at full speed, and demand is extraordinary. [5]\n\nBlackwell is the platform at the center of the AI race, with reasoning AI models driving orders-of-magnitude increases in training and inference performance. [5]\n\nBlackwell is used in the U.S. Department of Energy's largest AI supercomputer, Solstice, featuring 100,000 NVIDIA Blackwell GPUs. [6]\n\nBlackwell is also used in the Equinox system, featuring 10,000 NVIDIA Blackwell GPUs. [6]\n\nBlackwell is used in various other applications, including AI-RAN products, AI-native 5G-Advanced and 6G networks, and next-generati",
+   "on_text": "What is Blackwell?\n\nBlackwell is a data center-scale infrastructure that includes GPUs, CPUs, DPUs, interconnects, switch chips, and systems, and networking adapters. It excels at processing cutting-edge generative AI and accelerated computing workloads with market-leading performance and efficiency. [3]\n\nBlackwell is a full-stack computing platform that includes a large body of software, including the CUDA development platform, the CUDA-X collection of acceleration libraries, AI models, and training data sets, APIs, SDKs, and domain-specific application frameworks. [3]\n\nBlackwell Ultra is the leading architecture across all customer categories, while the prior Blackwell architecture saw continued strong demand. [4]\n\nBlackwell Data Center revenue grew 17% sequentially. [5]\n\nBlackwell is the AI platform the world has been waiting for, delivering an exceptional generational leap. Production of Blackwell Ultra is ramping at full speed, and demand is extraordinary. [5]\n\nBlackwell is the platform at the center of the AI race, with reasoning AI models driving orders-of-magnitude increases in training and inference performance. [5]\n\nBlackwell is used in the U.S. Department of Energy's largest AI supercomputer, Solstice, featuring 100,000 NVIDIA Blackwell GPUs. [6]\n\nBlackwell is also used in the Equinox system, featuring 10,000 NVIDIA Blackwell GPUs. [6]\n\nBlackwell is used in various other applications, including AI-RAN products, AI-native 5G-Advanced and 6G networks, and next-genera",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "kw-02",
+   "category": "exact_keyword",
+   "query": "What does JPM say about CET1 ratio requirements?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 6,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 5,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "Facts\n- JPMorgan Chase Bank, N.A. is not subject to the GSIB surcharge [1].\n- The CET1, Tier 1 and Total capital ratio requirements include a fixed capital conservation buffer requirement of 2.5% [1].\n- JPMorgan Chase Bank, N.A. is subject to regulations issued under the FDIC Improvement Act [1].\n- The leverage-based regulatory capital ratio requirements and well-capitalized ratios to which the Firm and JPMorgan Chase Bank, N.A. were subject as of December 31, 2025 and 2024 are presented in a table [1].\n- The table shows that the minimum CET1 capital ratio requirement is 4.0% [1].\n- JPMSE is required by the EU Single Resolution Board to maintain MREL [2][4][5][6].\n- As of June 30, 2026, JPMSE was compliant with its MREL requirements [2][4][5][6].\n- The CET1 capital ratio requirement for JPMSE is 4.5% [2][4][5][6].\n- J.P. Morgan Securities plc is subject to the PRA's minimum Pillar 1 requirements [3][5][6].\n- The minimum CET1 capital ratio requirement for J.P. Morgan Securities plc is 4.5% [3][5][6].\n\nInterpretation\nInference: JPMorgan Chase Bank, N.A. and its subsidiaries are subject to various regulatory capital requirements, including a fixed capital conservation buffer requirement of 2.5% and a minimum CET1 capital ratio requirement of 4.0% [1]. JPMSE is required to maintain MREL, which is a minimum requirement for own funds and eligible liabilities [2][4][5][6]. The CET1 capital ratio requirement for JPMSE is 4.5% [2][4][5][6].",
+   "on_text": "JPM says that CET1 ratio requirements are 4.5% [3] and 4.5% [4] and 4.5% [5] and 4.5% [6] for J.P. Morgan Securities plc, and 4.5% [2] for JPMSE.",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "kw-03",
+   "category": "exact_keyword",
+   "query": "What does NVIDIA say about the Hopper architecture?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 4,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 4,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "What does NVIDIA say about the Hopper architecture?\n\nFacts\n- NVIDIA introduced the Hopper architecture in 2024 [3].\n- The Hopper platform is mentioned as being compared to the NVIDIA Blackwell platform, with Blackwell delivering up to 50x better performance and 35x lower cost for agentic AI [2].\n- The Hopper architecture is not mentioned as being connected to 36 Grace CPUs and 72 Blackwell GPUs in a data center scale, liquid-cooled design, which is described as the NVIDIA Blackwell architecture [3].\n\nInterpretation\n- The Hopper architecture is an older architecture compared to the Blackwell architecture, which was introduced in 2024 and is described as a next-generation Data Center architecture [5].\n- The Hopper platform is not mentioned as being a data center-scale AI infrastructure, which is a key aspect of NVIDIA's current business [5].\n- The Hopper architecture is not mentioned as being connected to hundreds of thousands of GPUs, which is a feature of the Blackwell architecture [6].",
+   "on_text": "Facts\nNVIDIA is the world leader in accelerated computing [1].\nNVIDIA has invested over $76.7 billion in research and development since its inception [3].\nThe company has introduced several architectures, including Hopper, Blackwell, and Vera Rubin [3][5].\nThe Blackwell architecture connects 36 Grace CPUs and 72 Blackwell GPUs in a data center scale, liquid-cooled design [3].\nNVIDIA's next-generation Data Center architecture, Vera Rubin, began production shipments in the third quarter of fiscal year 2027 [5].\nThe company's data-center-scale offerings feature extreme co-design, where the infrastructure's chips, networking, systems, software, and algorithms are holistically architected and optimized to maximize performance and scale [6].\n\nInterpretation\nInference: The Hopper architecture is an older architecture, as it has been replaced by newer architectures such as Blackwell and Vera Rubin.\nFacts: The Blackwell architecture was introduced in 2024 [3], and Vera Rubin began production shipments in the third quarter of fiscal year 2027 [5].",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "kw-04",
+   "category": "exact_keyword",
+   "query": "What does JPMorgan disclose about Basel III?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 5,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "JPMorgan discloses that Basel III establishes minimum capital ratios and overall capital adequacy standards for large and internationally active U.S. Bank Holding Companies (\"BHCs\") and banks, including the Firm and JPMorgan Chase Bank, N.A. [1][3][5]\n\nThe minimum amount of regulatory capital that must be held by BHCs and banks is determined by calculating risk-weighted assets (\"RWA\"), which are on-balance sheet assets and off-balance sheet exposures, weighted according to risk. [1][2][3][5]\n\nUnder the rules currently in effect, two comprehensive approaches are prescribed for calculating Basel III RWA: a standardized approach (\"Standardized\"), and an advanced approach (\"Advanced\"). [1][2][3][5]\n\nAs of September 30, 2025, the Firm's Standardized risk-based ratios continue to be more binding than the Advanced risk-based ratios. [1]\n\nAs of June 30, 2026, the Advanced Total Capital ratio became the most binding constraint for the Firm's Basel III risk-based ratios. However, as of June 30, 2026, the Standardized ratios are more binding than the Advanced ratios with respect to the CET1 and Tier 1 risk-based ratios. [2][6]\n\nBasel III requires that Advanced Approaches banking organizations, including the Firm, calculate their SLRs. [1][2][3][6]\n\nThe Firm expects that the changes in requirements reflected in the U.S. Basel III Re-Proposal and the GSIB Surcharge Re-Proposal, taken together, would result in an increase in the Firm's required CET1 capital of approximately 4% as compared ",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "JPMorgan discloses that Basel III establishes minimum capital ratios and overall capital adequacy standards for large and internationally active U.S. Bank Holding Companies and banks, including the Firm and JPMorgan Chase Bank, N.A. [1][2][3][5]\n\nThe minimum amount of regulatory capital that must be held by BHCs and banks is determined by calculating risk-weighted assets (\"RWA\"), which are on-balance sheet assets and off-balance sheet exposures, weighted according to risk. [1][2][3][5]\n\nUnder the rules currently in effect, two comprehensive approaches are prescribed for calculating Basel III RWA: a standardized approach (\u201cStandardized\u201d), and an advanced approach (\u201cAdvanced\u201d). [1][2][3][5]\n\nAs of September 30, 2025, the Firm\u2019s Standardized risk-based ratios continue to be more binding than the Advanced risk-based ratios. [1]\n\nAs of June 30, 2026, the Advanced Total Capital ratio became the most binding constraint for the Firm\u2019s Basel III risk-based ratios. However, as of June 30, 2026, the Standardized ratios are more binding than the Advanced ratios with respect to the CET1 and Tier 1 risk-based ratios. [2][6]\n\nBasel III requires that Advanced Approaches banking organizations, including the Firm, calculate their SLRs. [1][2][3][6]\n\nThe Firm expects that the changes in requirements reflected in the U.S. Basel III Re-Proposal and the GSIB Surcharge Re-Proposal, taken together, would result in an increase in the Firm\u2019s required CET1 capital of approximately 4% as compared with t",
+   "rejected_detail": [
+    "1 sentence(s) state a figure with no citation"
+   ]
+  },
+  {
+   "id": "kw-05",
+   "category": "exact_keyword",
+   "query": "What does Microsoft report about Azure?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 4,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 3,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "Azure revenue increased 17% to $42.4 billion for the three months ended March 31, 2026, and $122.2 billion for the nine months ended March 31, 2026 [1]. \n\nAzure and other cloud services revenue was 40% of total revenue in the second quarter of 2026 [6]. \n\nIn fiscal year 2026, Microsoft Cloud revenue, which includes Azure, increased 27% to $214.4 billion [2]. \n\nAzure and other cloud services revenue was 39% of total revenue in the second quarter of 2025 [6]. \n\nIn fiscal year 2025, Microsoft Cloud revenue, which includes Azure, was $168.9 billion [5]. \n\nFacts\n- Azure revenue was $42.4 billion for the three months ended March 31, 2026 [1].\n- Azure revenue was $122.2 billion for the nine months ended March 31, 2026 [1].\n- Azure and other cloud services revenue was 40% of total revenue in the second quarter of 2026 [6].\n- Azure and other cloud services revenue was 39% of total revenue in the second quarter of 2025 [6].\n- Microsoft Cloud revenue, which includes Azure, was $214.4 billion in fiscal year 2026 [2].\n- Microsoft Cloud revenue, which includes Azure, was $168.9 billion in fiscal year 2025 [5].\n\nInterpretation\nInference: Azure revenue has been increasing over the past year, with a 17% increase in the second quarter of 2026 compared to the same period in 2025. This suggests that Azure is a growing part of Microsoft's business.\n\nNote: The context does not provide enough information to determine the reasons behind the growth of Azure revenue.",
+   "on_text": "Azure revenue was $42.4 billion for the three months ended March 31, 2025, and $122.2 billion for the nine months ended March 31, 2025 [4]. In fiscal year 2026, Microsoft Cloud revenue, which includes Azure, increased 27% to $214.4 billion [2]. Azure and other cloud services revenue was 40% of total revenue in the second quarter of 2026 [6].",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "kw-06",
+   "category": "exact_keyword",
+   "query": "What does NVIDIA disclose about stock-based compensation?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 4,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "grounding",
+   "off_text": "Facts\n- NVIDIA recognizes stock-based compensation expense from grants of restricted stock units, or RSUs, performance stock units, or PSUs, and market-based PSUs, and issuances under their employee stock purchase plan, or ESPP. [1]\n- Stock-based compensation expense is included in the Condensed Consolidated Statements of Income as follows:\n  - Three Months Ended Jul 26, 2026: Cost of revenue $71, Research and development $1,551, Sales, general and administrative $405, Total $2,027 [1]\n  - Six Months Ended Jul 26, 2026: Cost of revenue $139, Research and development $3,010, Sales, general and administrative $805, Total $3,954 [1]\n  - Three Months Ended Jul 27, 2025: Cost of revenue $58, Research and development $1,191, Sales, general and administrative $375, Total $1,624 [1]\n  - Six Months Ended Jul 27, 2025: Cost of revenue $123, Research and development $2,254, Sales, general and administrative $722, Total $3,099 [1]\n- As of July 26, 2026, aggregate unearned stock-based compensation expense was $19.4 billion, which is expected to be recognized over a weighted average period of 2.6 years for RSUs, PSUs, and market-based PSUs, and 0.9 years for ESPP. [1]\n- Beginning in the first quarter of fiscal 2027, NVIDIA will include stock-based compensation expense in its non-GAAP financial measures. Stock-based compensation expense for the first quarter of fiscal 2027 is expected to have a 0.1% impact on non-GAAP gross margin and $1.9 billion in non-GAAP operating expenses. [2]\n- NVIDI",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "NVIDIA discloses that stock-based compensation expense is recognized from grants of restricted stock units (RSUs), performance stock units (PSUs), and market-based PSUs, and issuances under the employee stock purchase plan (ESPP) [1]. The company also discloses that the aggregate unearned stock-based compensation expense as of July 26, 2026, was $19.4 billion, which is expected to be recognized over a weighted average period of 2.6 years for RSUs, PSUs, and market-based PSUs, and 0.9 years for ESPP [1].\n\nFacts\n- Stock-based compensation expense is recognized from grants of RSUs, PSUs, and market-based PSUs, and issuances under the ESPP [1].\n- The aggregate unearned stock-based compensation expense as of July 26, 2026, was $19.4 billion [1].\n- The weighted average period for recognizing stock-based compensation expense for RSUs, PSUs, and market-based PSUs is 2.6 years [1].\n- The weighted average period for recognizing stock-based compensation expense for ESPP is 0.9 years [1].\n\nInterpretation\nInference: NVIDIA discloses that stock-based compensation expense is a significant expense for the company, with an aggregate unearned amount of $19.4 billion as of July 26, 2026. This suggests that the company has a substantial number of outstanding equity awards that will be recognized as expense over the next few years. \n\nNote: The inference is based on the fact that the aggregate unearned stock-based compensation expense is a significant amount, and the weighted average periods for r",
+   "rejected_detail": [
+    "1 sentence(s) state a figure with no citation"
+   ]
+  },
+  {
+   "id": "temp-01",
+   "category": "temporal",
+   "query": "Give me all important NVDA news from the last 7 days",
+   "route": "NEWS",
+   "n_evidence": 8,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "Nvidia's reported discussions to anchor Anthropic's planned $100 billion IPO represent more than a massive capital injection; they signal the maturation of a closed capital loop. In this arrangement, the landlord\u2014the provider of the essential compute infrastructure\u2014is now financing the tenant's exit. By positioning itself as an anchor investor, Nvidia is not merely selling hardware; it is ensuring that the capital it provides to Anthropic returns to its own balance sheet, effectively underwriting the very entity that consumes its most valuable output.",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "Nvidia's reported discussions to anchor Anthropic's planned $100 billion IPO represent more than a massive capital injection; they signal the maturation of a closed capital loop. In this arrangement, the landlord\u2014the provider of the essential compute infrastructure\u2014is now financing the tenant's exit. By positioning itself as an anchor investor, Nvidia is not merely selling hardware; it is ensuring that the capital it provides to Anthropic returns to its own balance sheet, effectively underwriting the very entity that consumes its most valuable output.",
+   "rejected_detail": [
+    "1 sentence(s) state a figure with no citation"
+   ]
+  },
+  {
+   "id": "temp-02",
+   "category": "temporal",
+   "query": "What happened with JPMorgan in the past week?",
+   "route": "NEWS",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "JPMorgan's stock gained nearly 3% [1]. There were no other significant events mentioned in the context.",
+   "on_text": "JPMorgan's stock gained nearly 3% [1]. There were no other specific events mentioned in the context regarding JPMorgan.",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "temp-03",
+   "category": "temporal",
+   "query": "What news came out about Microsoft recently?",
+   "route": "NEWS",
+   "n_evidence": 8,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "Microsoft's recent news includes:\n\n- MSFT Stock Bucks Iran-Linked Sell-Off: Microsoft Releases Mac-Style Search On Windows 11\n- MSFT Stock Holds Up Amid US-Iran Geopolitical Jitters: Retail Calls It \u2018Safest Earnings Play\u2019\n- MSFT Stock Enters Bear Market After 21% Drop From Peak: Retail Cautious But Analysts Stay Overwhelmingly Bullish\n- Jim Cramer Wondered Whether Microsoft Corporation (NASDAQ:MSFT) Isn\u2019t \u201cThat\u201d Dependent On AI\n- MSFT Stock Rises Despite Shareholder Lawsuit Over AI Spending, Cloud Slowdown\n- Microsoft Retail Investors Shrug Off US-Iran Market Fears: 'Most Safe Name During Wars'\n- Michael Burry Buys Long-Dated Microsoft Calls, Adds To JD And Adobe \u2014 Trims Palantir Short\n- Bill Gates\u2019 Foundation Sells Last Of Microsoft",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "Microsoft's recent news includes:\n\n* MSFT Stock Bucks Iran-Linked Sell-Off: Microsoft Releases Mac-Style Search On Windows 11\n* MSFT Stock Holds Up Amid US-Iran Geopolitical Jitters: Retail Calls It \u2018Safest Earnings Play\u2019\n* MSFT Stock Enters Bear Market After 21% Drop From Peak: Retail Cautious But Analysts Stay Overwhelmingly Bullish\n* Jim Cramer Wondered Whether Microsoft Corporation (NASDAQ:MSFT) Isn\u2019t \u201cThat\u201d Dependent On AI\n* MSFT Stock Rises Despite Shareholder Lawsuit Over AI Spending, Cloud Slowdown\n* Microsoft Retail Investors Shrug Off US-Iran Market Fears: 'Most Safe Name During Wars'\n* Michael Burry Buys Long-Dated Microsoft Calls, Adds To JD And Adobe \u2014 Trims Palantir Short\n* Bill Gates\u2019 Foundation Sells Last Of Microsoft",
+   "rejected_detail": [
+    "1 sentence(s) state a figure with no citation"
+   ]
+  },
+  {
+   "id": "temp-04",
+   "category": "temporal",
+   "query": "What did NVIDIA say about Blackwell demand in its most recent quarterly filing?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "NVIDIA did not mention Blackwell demand in its most recent quarterly filing (FY2026Q2).",
+   "on_text": "NVIDIA did not mention Blackwell demand in its most recent quarterly filing, which is the 10-Q for FY2026Q2 filed on 2026-05-20.",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "temp-05",
+   "category": "temporal",
+   "query": "What does Microsoft's latest annual report say about its segments?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "Microsoft's latest annual report (FY2026) states that its segments are Productivity and Business Processes, Intelligent Cloud, and More Personal Computing.\n\nThe reportable segments are described as follows:\n\n* Productivity and Business Processes: This segment consists of products and services in Microsoft's portfolio of productivity, communication, and information services, spanning a variety of devices and platforms. It primarily comprises Microsoft 365 Commercial products and cloud services, Microsoft 365 Consumer products and cloud services, LinkedIn, and Dynamics products and cloud services.\n* Intelligent Cloud: This segment consists of Microsoft's public, private, and hybrid server products and cloud services.\n* More Personal Computing: This segment is not described in detail in the provided context.\n\nThe report also mentions that in August 2024, Microsoft announced changes to the composition of its segments, bringing the commercial components of Microsoft 365 together in the Productivity and Business Processes segment.",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "Microsoft's latest annual report (FY2026) states that its segments are Productivity and Business Processes, Intelligent Cloud, and More Personal Computing.\n\nThe reportable segments are described as follows:\n\n* Productivity and Business Processes: This segment consists of products and services in Microsoft's portfolio of productivity, communication, and information services, spanning a variety of devices and platforms. It primarily comprises Microsoft 365 Commercial products and cloud services, Microsoft 365 Consumer products and cloud services, LinkedIn, and Dynamics products and cloud services.\n* Intelligent Cloud: This segment consists of Microsoft's public, private, and hybrid server products and cloud services.\n* More Personal Computing: This segment is not described in detail in the provided context.\n\nThe report states that the chief operating decision maker uses operating income to allocate resources and assess the performance of the segments.",
+   "rejected_detail": [
+    "only 0% of 5 claims cited (need 80%)"
+   ]
+  },
+  {
+   "id": "temp-06",
+   "category": "temporal",
+   "query": "What did JPMorgan report for net revenue in its most recent quarterly filing?",
+   "route": "MIXED",
+   "n_evidence": 7,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "$57.3 billion [3]",
+   "on_text": "$57.3 billion [3]",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "num-01",
+   "category": "numeric",
+   "query": "What was NVDA revenue for the last four quarters?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "$96.22B",
+   "on_text": "$96.22B",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "num-02",
+   "category": "numeric",
+   "query": "How did Microsoft's gross margin trend over the last year?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "Gross margin trend over the last year for Microsoft was: 67.2%, 67.6%, 68.0%, 69.0%, 68.6%, 68.7%, 68.7%, 69.4%.",
+   "on_text": "Facts\n- Microsoft's gross margin was 67.2% [1].\n- Microsoft's gross margin was 67.6% [1].\n- Microsoft's gross margin was 68.0% [1].\n- Microsoft's gross margin was 69.0% [1].\n- Microsoft's gross margin was 68.6% [1].\n- Microsoft's gross margin was 68.7% [1].\n- Microsoft's gross margin was 68.7% [1].\n- Microsoft's gross margin was 69.4% [1].\n\nInterpretation\n- Microsoft's gross margin trended upwards over the last year, with a peak of 69.4% [1] and a trough of 67.2% [1].",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "num-03",
+   "category": "numeric",
+   "query": "What was NVDA's most recent diluted EPS?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "$2.46 [1]",
+   "on_text": "$2.46 [1]",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "num-04",
+   "category": "numeric",
+   "query": "What was JPMorgan's revenue in the most recent quarter?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "$57.35B [1]",
+   "on_text": "$57.35B [1]",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "num-05",
+   "category": "numeric",
+   "query": "How much did NVDA revenue grow year over year?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": false,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "$96.22B (YoY +105.9% vs FY2026Q2)",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "$96.22B (YoY +105.9% vs FY2026Q2)",
+   "rejected_detail": [
+    "1 sentence(s) state a figure with no citation"
+   ]
+  },
+  {
+   "id": "num-06",
+   "category": "numeric",
+   "query": "What is Microsoft's most recent operating income?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "$40.60B [1]",
+   "on_text": "$40.60B [1]",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "x-01",
+   "category": "cross_document",
+   "query": "Revenue increased last quarter \u2014 what did management say caused it?",
+   "route": "MIXED",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "Facts\n- Revenue was $90.0 billion and increased 18% (up 17% in constant currency) in the quarter ended June 30, 2026 [1].\n- Satya Nadella, chairman and chief executive officer of Microsoft, said \"We are advancing the frontier on the cost-to-outcome curve, ensuring every customer can turn tokens into business results\" [1].\n- Azure revenue surpassed $100 billion for the first time this year [1].\n- Microsoft 365 Copilot reached over 30 million paid seats, reflecting the confidence customers are placing in us to power their AI transformation [1].\n\nInterpretation\nInference: Management attributed the revenue increase to the advancement of the frontier on the cost-to-outcome curve, ensuring every customer can turn tokens into business results.\nFacts: Satya Nadella said \"We are advancing the frontier on the cost-to-outcome curve, ensuring every customer can turn tokens into business results\" [1].",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "Facts\n- Revenue was $90.0 billion and increased 18% (up 17% in constant currency) in the quarter ended June 30, 2026.\n- Satya Nadella, chairman and chief executive officer of Microsoft, said \"We are advancing the frontier on the cost-to-outcome curve, ensuring every customer can turn tokens into business results.\"\n- Azure revenue surpassed $100 billion for the first time this year.\n- Microsoft 365 Copilot reached over 30 million paid seats, reflecting the confidence customers are placing in Microsoft to power their AI transformation.\n\nInterpretation\nInference: Management attributed the revenue increase to the advancement of the frontier on the cost-to-outcome curve, ensuring every customer can turn tokens into business results. This suggests that Microsoft's focus on AI and cloud infrastructure is driving growth.\n\nCitation: [1]",
+   "rejected_detail": [
+    "3 sentence(s) state a figure with no citation"
+   ]
+  },
+  {
+   "id": "x-02",
+   "category": "cross_document",
+   "query": "Does the recent NVDA news match what management said in the filings?",
+   "route": "CROSS_SOURCE",
+   "n_evidence": 15,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 10,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "grounding",
+   "off_text": "Facts\n- NVDA's latest revenue is $96.22B [1].\n- Broadcom's AI semiconductor revenue jumped 221% year over year to $16.7 billion in fiscal 2026's Q3 [2].\n- Management now expects AI chip revenue of $115 billion in fiscal 2027 and $230 billion in fiscal 2028 [2].\n- NVDA's revenue surged 106% year over year to $96.2 billion in fiscal 2027's Q2 [2].\n- NVDA's Data Center revenue jumped 117% year over year to $89 billion in fiscal 2027's Q2 [2].\n- OpenAI developed the Jalape\u00f1o chip partly to reduce its reliance on NVDA GPUs [2].\n- NVDA is the world leader in AI and accelerated computing [10][11][12][13][14][15].\n\nInterpretation\n- The recent NVDA news does not directly match management's statements in the filings, as the news articles focus on NVDA's growth and potential, while the filings provide more cautious language about future growth and potential risks [2][10][11][12][13][14][15].\n- The filings emphasize the importance of technological development and competition, as well as the potential for design, manufacturing, or software defects, which could impact NVDA's growth and performance [10][11][12][13][14][15].\n- The news articles, on the other hand, focus on NVDA's growth and potential, with some articles suggesting that the company is well-positioned for future growth and success [2][8][9].",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "Facts\n- NVDA's latest revenue is $96.22B [1].\n- Broadcom's AI semiconductor revenue jumped 221% year over year to $16.7 billion in fiscal 2026's Q3 [2].\n- Management now expects AI chip revenue of $115 billion in fiscal 2027 and $230 billion in fiscal 2028 [2].\n- Nvidia's revenue surged 106% year over year to $96.2 billion in fiscal 2027's Q2 [2].\n- Nvidia's Data Center revenue jumped 117% year over year to $89 billion in fiscal 2027's Q2 [2].\n- OpenAI developed the Jalape\u00f1o chip partly to reduce its reliance on Nvidia GPUs [2].\n- Nvidia is positioning itself as an anchor investor in Anthropic's planned $100 billion IPO [7].\n- Anthropic is reportedly seeking up to $100 billion at a valuation near $2 trillion [7].\n- Nvidia's CEO Jensen Huang believes agentic AI will soon be common in the workplace [8].\n- Nvidia's fiscal 2028 guidance calls for approximately $230 billion in AI chip revenue [5].\n\nInterpretation\n- The recent NVDA news does not directly match what management said in the filings. Management expects AI chip revenue of $115 billion in fiscal 2027 and $230 billion in fiscal 2028, but the recent news does not provide specific revenue guidance for fiscal 2027 or 2028. However, it does mention that Nvidia's growth is all about supply, not demand, and that the company's fiscal 2028 guidance calls for approximately $230 billion in AI chip revenue, which is consistent with management's expectations [5].",
+   "rejected_detail": [
+    "1 sentence(s) state a figure with no citation"
+   ]
+  },
+  {
+   "id": "x-03",
+   "category": "cross_document",
+   "query": "Compare NVDA and MSFT revenue growth",
+   "route": "CROSS_SOURCE",
+   "n_evidence": 7,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 5,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "grounding",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "Revenue growth for NVDA and MSFT:\n\n$44.1B (NVDA Q1 FY2026) [6]\n$46.7B (NVDA Q2 FY2026) [2]\n$68.1B (NVDA Q4 FY2026) [3]\n$215.9B (NVDA FY2026) [3]\n$76.4B (MSFT Q3 FY2025) [4]\n$90.0B (MSFT Q3 FY2026) [7]\n\nNVDA revenue growth: 12% QoQ (Q1 FY2026), 6% QoQ (Q2 FY2026), 20% QoQ (Q4 FY2026) [2][3][6]\nMSFT revenue growth: 18% YoY (Q3 FY2025), 18% YoY (Q3 FY2026) [4][7]\n\nNVDA revenue growth is higher than MSFT revenue growth in Q2 FY2026, but lower in Q3 FY2026.",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the grounding check and was withheld",
+   "rejected_text": "Revenue growth for NVDA and MSFT:\n\n$44.1B (Q1 FY26) to $46.7B (Q2 FY26) for NVDA [6]\n$76.4B (Q3 FY25) to $90.0B (Q3 FY26) for MSFT [7]\n\n$68.1B (Q4 FY26) for NVDA [3]\n$90.0B (Q3 FY26) for MSFT [7]\n\n$215.9B (FY26) for NVDA [3]\n$76.4B (Q3 FY25) for MSFT [4]\n\nNVDA's revenue growth from Q1 to Q2 FY26 is 6% [2]. MSFT's revenue growth from Q3 FY25 to Q3 FY26 is 18% [7].",
+   "rejected_detail": [
+    "4 sentence(s) not supported by their citation"
+   ]
+  },
+  {
+   "id": "x-04",
+   "category": "cross_document",
+   "query": "How has NVDA revenue changed over the last four quarters and why?",
+   "route": "MIXED",
+   "n_evidence": 7,
+   "off": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "**Revenue Change Over Last Four Quarters**\n\n$96.22B (Q2 FY2027)\n$81.61B (Q1 FY2027)\n$68.13B (Q4 FY2026)\n$57.01B (no data available for Q3 FY2026)\n\nINSUFFICIENT EVIDENCE: Q3 FY2026 revenue",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "**Revenue Change Over Last Four Quarters**\n\n$96.22B (Q2 FY2027)\n$81.61B (Q1 FY2027)\n$68.13B (Q4 FY2026)\n$57.01B (no Q3 FY2026 data available)\n\n**Interpretation**\n\nFacts:\n- Q2 FY2027 revenue was $96.22B, up 106% from a year ago.\n- Q1 FY2027 revenue was $81.61B, up 18% from the previous quarter.\n- Q4 FY2026 revenue was $68.13B, up 20% from Q3 FY2026 and up 73% from a year ago.\n\nInference:\nThe revenue has been increasing over the last four quarters, with a significant jump in Q2 FY2027. This could be due to the growing demand for NVIDIA's products, particularly in the Data Center segment, which has seen a 117% increase in revenue from a year ago.",
+   "rejected_detail": [
+    "8 sentence(s) state a figure with no citation"
+   ]
+  },
+  {
+   "id": "x-05",
+   "category": "cross_document",
+   "query": "What does NVIDIA say about export restrictions and how does that affect its revenue?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 1,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "Facts\n- NVIDIA's latest revenue is $96.22B [1].\n\nInterpretation\n- I cannot infer the effect of export restrictions on NVIDIA's revenue without more information.",
+   "on_text": "Facts\n- NVIDIA's latest revenue is $96.22B [1].\n\nInterpretation\n- I couldn't find any information about NVIDIA's statements on export restrictions in the provided context. Therefore, I have no interpretation to provide.",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "x-06",
+   "category": "cross_document",
+   "query": "Do NVIDIA and Microsoft describe similar AI demand trends?",
+   "route": "CROSS_SOURCE",
+   "n_evidence": 7,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 3,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 2,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "Facts\n- NVIDIA's revenue for Q2 2027 is $96,221,000,000 [1].\n- NVIDIA's revenue for Q1 2027 is $81,615,000,000 [1].\n- NVIDIA's revenue for Q4 2026 is $68,127,000,000 [1].\n- NVIDIA's revenue for Q3 2026 is $57,006,000,000 [1].\n- NVIDIA's revenue for Q4 2026 is $90,007,000,000 [1].\n- NVIDIA's revenue for Q3 2026 is $82,886,000,000 [1].\n- NVIDIA's revenue for Q2 2026 is $81,273,000,000 [1].\n- NVIDIA's revenue for Q1 2026 is $77,673,000,000 [1].\n\nInterpretation\nNVIDIA and Microsoft do not describe similar AI demand trends. NVIDIA's forward-looking statements describe exponential growth in computing demand [6] and increasing demand for AI infrastructure [3], while Microsoft's financials are not provided in the context.",
+   "on_text": "Facts\n- NVIDIA's revenue for Q2 2027 is $96,221,000,000 [1].\n- NVIDIA's revenue for Q1 2027 is $81,615,000,000 [1].\n- NVIDIA's revenue for Q4 2026 is $68,127,000,000 [1].\n- NVIDIA's revenue for Q3 2026 is $57,006,000,000 [1].\n- NVIDIA's revenue for Q4 2026 is $90,007,000,000 [1].\n- NVIDIA's revenue for Q3 2026 is $82,886,000,000 [1].\n- NVIDIA's revenue for Q2 2026 is $81,273,000,000 [1].\n- NVIDIA's revenue for Q1 2026 is $77,673,000,000 [1].\n\nInterpretation\nNVIDIA and Microsoft do not describe similar AI demand trends. NVIDIA's forward-looking statements describe exponential growth in computing demand [6], while Microsoft's financials do not provide similar information.",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "ie-01",
+   "category": "insufficient_evidence",
+   "query": "What is NVIDIA's market share in Brazil?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "INSUFFICIENT EVIDENCE: NVIDIA's market share in Brazil.",
+   "on_text": "INSUFFICIENT EVIDENCE: NVIDIA's market share in Brazil.",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "ie-02",
+   "category": "insufficient_evidence",
+   "query": "What did the CFO say about the 2030 dividend policy?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": false,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 3,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": true,
+    "withheld_by": "citation_coverage",
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": "citation_coverage",
+   "off_text": "The CFO did not explicitly mention the 2030 dividend policy in any of the provided documents. However, based on the information provided, it can be inferred that the company intends to continue returning capital to shareholders in the form of dividends, subject to declaration by the Board of Directors.\n\nFacts\n- The company has declared dividends totaling $13.5 billion and $12.3 billion for the six months ended December 31, 2025 and 2024, respectively [1].\n- The company intends to continue returning capital to shareholders in the form of dividends, subject to declaration by the Board of Directors [1].\n- The company declared dividends totaling $20.3 billion and $18.5 billion for the nine months ended March 31, 2026 and 2025, respectively [3].\n- The company declared dividends totaling $27.0 billion and $24.7 billion for the fiscal years 2026 and 2025, respectively [4].\n- The company intends to continue returning capital to shareholders in the form of dividends, subject to declaration by the Board of Directors [4].\n\nInterpretation\nInference: The company has a history of declaring dividends and intends to continue doing so, subject to the discretion of the Board of Directors. However, there is no explicit mention of a 2030 dividend policy, and it is unclear what the company's plans are for dividend payments beyond the current fiscal year.",
+   "on_text": "INSUFFICIENT EVIDENCE: the generated answer failed the citation_coverage check and was withheld",
+   "rejected_text": "The CFO did not explicitly mention the 2030 dividend policy in any of the provided documents. However, based on the information provided, it can be inferred that the company intends to continue returning capital to shareholders in the form of dividends, subject to declaration by the Board of Directors.\n\nFacts\n- The company has declared dividends totaling $13.5 billion and $12.3 billion for the six months ended December 31, 2025 and 2024, respectively [1].\n- The company intends to continue returning capital to shareholders in the form of dividends, subject to declaration by the Board of Directors [1].\n- The company declared dividends totaling $20.3 billion and $18.5 billion for the nine months ended March 31, 2026 and 2025, respectively [3].\n- The company declared dividends totaling $27.0 billion and $24.7 billion for the fiscal years 2026 and 2025, respectively [4].\n- The company intends to continue returning capital to shareholders in the form of dividends, subject to declaration by the Board of Directors [4].\n\nInterpretation\nInference: The company has a history of declaring dividends and intends to continue doing so in the future, subject to Board approval. However, there is no explicit mention of a 2030 dividend policy, and the company's dividend declarations are subject to change based on various factors, including Board approval and market conditions.",
+   "rejected_detail": [
+    "only 62% of 8 claims cited (need 80%)"
+   ]
+  },
+  {
+   "id": "ie-03",
+   "category": "insufficient_evidence",
+   "query": "What was Tesla's revenue last quarter?",
+   "route": "NUMERIC",
+   "n_evidence": 0,
+   "off": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "INSUFFICIENT EVIDENCE: no numeric evidence matched this query",
+   "on_text": "INSUFFICIENT EVIDENCE: no numeric evidence matched this query",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "ie-04",
+   "category": "insufficient_evidence",
+   "query": "How many employees does JPMorgan plan to hire in 2031?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "INSUFFICIENT EVIDENCE: information about JPMorgan's hiring plans for 2031.",
+   "on_text": "INSUFFICIENT EVIDENCE: information about JPMorgan's hiring plans for 2031.",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "ie-05",
+   "category": "insufficient_evidence",
+   "query": "What is Microsoft's gross margin target for fiscal 2035?",
+   "route": "NUMERIC",
+   "n_evidence": 1,
+   "off": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "INSUFFICIENT EVIDENCE: Target for fiscal 2035.",
+   "on_text": "INSUFFICIENT EVIDENCE: Target for fiscal 2035.",
+   "rejected_text": "",
+   "rejected_detail": []
+  },
+  {
+   "id": "ie-06",
+   "category": "insufficient_evidence",
+   "query": "What did NVIDIA say about its acquisition of Intel?",
+   "route": "FILING_RAG",
+   "n_evidence": 6,
+   "off": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "on": {
+    "refused": true,
+    "withheld": false,
+    "withheld_by": null,
+    "n_citations": 0,
+    "hallucinated_citations": 0,
+    "compliant": true,
+    "unsupported_figures": []
+   },
+   "paired_would_withhold": null,
+   "off_text": "INSUFFICIENT EVIDENCE: NVIDIA's statement about its acquisition of Intel.",
+   "on_text": "INSUFFICIENT EVIDENCE: NVIDIA's statement about its acquisition of Intel.",
+   "rejected_text": "",
+   "rejected_detail": []
+  }
+ ]
+}

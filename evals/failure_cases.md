@@ -428,3 +428,39 @@ annual report", routed to NEWS — "latest" matched the recency table and "annua
 was missing from `FILING_PAT`, so nothing marked it as a filing question. Same class as
 the "last quarter" bug in DECISIONS #26: a document noun has to outrank a recency
 adjective. Adding the document nouns fixed it and lifted rules-only accuracy to 0.88.
+
+## FC-14 — Citations resolve, the numbers do not exist (fixed for absent/misattributed figures; open for stale ones)
+
+**Case.** A revenue question whose SQL evidence (item `[1]`) held 96.22 / 81.61 / 68.13 /
+57.01 ($B, latest four quarters) produced an answer citing `$44.1B` and `$39.3B`. Every
+`[n]` resolved, so `check_citations` passed; nothing compared the *figures* to the item
+they sat next to. (Account of the run as reported; the answer text was not preserved in
+`answer_eval.json`, so the gate reproduces the shape synthetically.)
+
+**Fix.** `generation.answer.run_chain`, three deterministic validators, first failure
+withholds the answer as INSUFFICIENT EVIDENCE — no regeneration loop:
+1. **numeric_consistency** — every checkable figure in the prose ($, %, scaled, decimal,
+   comma-grouped) must be a plausible rounding of a figure in the evidence. Scale-aware
+   (`$96,221 million` = `$96.22B`); table cells with no stated scale may stand for any of
+   1/K/M/B. Derived figures (a growth rate the model computed) are rejected unless the
+   evidence states them.
+2. **citation_coverage** — a sentence with a figure must carry a `[n]`; overall ≥80% of
+   claim sentences cited. Absence statements ("no mention of…") are not claims.
+3. **grounding** — a cited sentence's figures must appear in *its* cited item, and ≥50%
+   of its content words must too (skipped for pure SQL rows, which have no prose).
+
+**What it does not catch — measured, not assumed.** Replaying the stored `x-03` answer
+("Compare NVDA and MSFT revenue growth", `$44.1B (NVDA Q1 FY2026) [6]`) passes all three:
+`$44.1 billion` genuinely appears in item `[6]`, an FY2025Q2 8-K that retrieval ranked
+into a "latest quarters" question. The figure is real and correctly cited; it is the
+*period* that is wrong. That is FC-10 (nothing prefers the current filing), and no check
+that compares text to evidence can see it. Also uncaught: a paraphrase that inverts the
+cited sentence (lexical overlap has no notion of negation).
+
+**Cost.** On 40 real generations the chain withheld 15 (all `citation_coverage`; none
+numeric, one grounding fixed by a regex bug found while calibrating). Most are genuine —
+uncited figures, uncited Interpretation sections, `(1, 3, 5)` citations the prompt
+forbids — but it turns `num-05`, a correct verbatim SQL row that the model forgot to
+cite, into a refusal. Thresholds were calibrated on the same 40 questions they are
+reported on, so treat 15/40 as a development number.
+

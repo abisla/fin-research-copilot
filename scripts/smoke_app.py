@@ -69,8 +69,13 @@ def main() -> int:
     passed &= check("evidence", len(numbered) >= 2,
                     f"{len(numbered)} numbered items, e.g. "
                     f"{numbered[0][:70] if numbered else '—'}")
-    passed &= check("cited", any("✅ cited" in lab for lab in numbered),
-                    "at least one evidence item is marked as cited in the answer")
+    # Since the validation chain, a live answer may legitimately be withheld (see
+    # DECISIONS #32), in which case nothing is cited. The UI contract is then that it
+    # says so and shows why — never a silent empty panel.
+    withheld = [lab for lab in labels if lab.startswith("Withheld by the")]
+    passed &= check("cited", any("✅ cited" in lab for lab in numbered) or bool(withheld),
+                    "answer marks its cited evidence" if not withheld
+                    else f"answer withheld by validation, panel shown: {withheld[0][:60]}")
     passed &= check("scores", any("score" in lab for lab in numbered),
                     "retrieved chunks show their retriever score")
 
